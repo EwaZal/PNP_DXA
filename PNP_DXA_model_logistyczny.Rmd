@@ -30,14 +30,33 @@ if (file.exists(plik_dane_do_analizy)) {
   stop(sprintf("Nie znaleziono pliku: `%s`. Uruchom notatnik przygotowujący zbiór danych!", plik_dane_do_analizy))
 }
 
+PHPT_ml <- PHPT
 
-# zmienne <- c("fracture", "nicotine_dependence")
-# PHPT[zmienne] <- lapply(PHPT[zmienne], function(x) ifelse(x == "Y", 1, 0))
+zmienne <- c("fracture", "nicotine_dependence")
+
+PHPT_ml[zmienne] <- lapply(PHPT_ml[zmienne], function(x) ifelse(x == "Y", 1, 0))
 
 
-PHPT$fracture_bin <- ifelse(PHPT$fracture == "Y", 1, 0)
-PHPT$nicotine_dependence_bin <- ifelse(PHPT$nicotine_dependence == "Y", 1, 0)
+
+# PHPT$fracture_bin <- ifelse(PHPT$fracture == "Y", 1, 0)
+# PHPT$nicotine_dependence_bin <- ifelse(PHPT$nicotine_dependence == "Y", 1, 0)
 PHPT$sex_bin <- ifelse(PHPT$sex == "K", 1, 0)
+```
+
+
+# algorytm MICE 
+``` {r}
+
+kolumny_do_imputacji <- c("TBS", "Tscore_lumbar", "Tscore_femur_neck", "Tscore_radial")
+dane_subset <- PTHP_ml[, kolumny_do_imputacji]
+
+imputacja <- mice(dane_subset, m = 5, method = 'pmm', seed = 123)
+
+dane_imputowane <- complete(imputacja, 1)
+
+PHPT_ml[, kolumny_do_imputacji] <- dane_imputowane
+
+summary(PHPT_ml)
 
 ```
 
