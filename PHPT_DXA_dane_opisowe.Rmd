@@ -34,7 +34,6 @@ if (file.exists(plik_dane_do_analizy)) {
 theme_set(theme_classic2(base_size = 13))
 ```
 # sprawdzenie rozkladu - w obu grupach (PHPT i kontrolnej)
-# Rozklad normalny maja zmienne: Tscore_femur_neck, Tscore_femur_total, Tscore_lumbar, Tscore_radial, zscore_femur_neck, zscore_femur_total, zscore_lumbar, zscore_radial
 ```{r}
 PHPT %>%
   select(age, weight, Ca, Pi, iPTH, nOHD, aOHD, Cr, albumin, BMD_neck, HF_risk, MOF_risk, Tscore_femur_neck, Tscore_femur_total, Tscore_lumbar, Tscore_radial, zscore_femur_neck, zscore_femur_total, zscore_lumbar, zscore_radial) %>%
@@ -54,7 +53,7 @@ PHPT %>%
   select(nOHD, BMD_neck, Tscore_femur_neck, Tscore_femur_total, Tscore_lumbar, Tscore_radial, zscore_femur_neck, zscore_femur_total, zscore_lumbar, zscore_radial) %>%
   map(shapiro.test)
 ```
-
+# Rozklad normalny maja zmienne: Tscore_femur_neck, Tscore_femur_total, Tscore_lumbar, Tscore_radial, zscore_femur_neck, zscore_femur_total, zscore_lumbar, zscore_radial
 
 # POROWNANIE GRUPY PC POD WZGLEDEM PROPORSJI PLCI
 ```{r}
