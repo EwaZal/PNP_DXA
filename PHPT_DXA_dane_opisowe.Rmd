@@ -158,11 +158,11 @@ PHPT %>%
 
 # iPTH
 ```{r}
-wilcox.test(PTH_intact ~ group, data = subset(PHPT, group != "NA"))
+wilcox.test(iPTH ~ group, data = subset(PHPT, group != "NA"))
 
 PHPT %>%
   group_by(group) %>%
-  get_summary_stats(PTH_intact, type = "quantile")
+  get_summary_stats(iPTH, type = "quantile")
 ```
 
 # 25OHD
@@ -598,14 +598,14 @@ ggplot(PHPT, aes(Ca, BMD_neck)) +
 
 # PTH a BMD
 ```{r}
-ggplot(PHPT, aes(PTH_intact, BMD_neck)) +
+ggplot(PHPT, aes(iPTH, BMD_neck)) +
   geom_point() +
   geom_smooth(method = "lm") +
   theme_light() +
   labs(x = "BMD femur neck", y ="PTH") +
   stat_cor(method = "pearson")
 
-ggplot(PHPT, aes(PTH_intact, BMD_neck)) +
+ggplot(PHPT, aes(iPTH, BMD_neck)) +
   geom_point() +
   geom_smooth(method = "lm") +
   theme_light() +
@@ -625,7 +625,7 @@ ggplot(PHPT, aes(log_iPTH, BMD_neck)) +
 
 # PTH a BMD z podzialem na grupe (pearson)
 ```{r}
-ggplot(PHPT, aes(PTH_intact, BMD_neck)) +
+ggplot(PHPT, aes(iPTH, BMD_neck)) +
   geom_point() +
   geom_smooth(method = "lm") +
   theme_light() +
@@ -636,7 +636,7 @@ ggplot(PHPT, aes(PTH_intact, BMD_neck)) +
 
 # PTH a BMD z podzialem na grupe
 ```{r}
-ggplot(PHPT, aes(PTH_intact, BMD_neck)) +
+ggplot(PHPT, aes(iPTH, BMD_neck)) +
   geom_point() +
   geom_smooth(method = "lm") +
   theme_light() +
