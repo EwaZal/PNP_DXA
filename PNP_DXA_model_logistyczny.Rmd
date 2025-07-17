@@ -36,7 +36,7 @@ if (file.exists(plik_dane_do_analizy)) {
 
 
 PHPT$fracture_bin <- ifelse(PHPT$fracture == "Y", 1, 0)
-PHPT$nicotine_dependence <- ifelse(PHPT$nicotine_dependence == "Y", 1, 0)
+PHPT$nicotine_dependence_bin <- ifelse(PHPT$nicotine_dependence == "Y", 1, 0)
 PHPT$sex_bin <- ifelse(PHPT$sex == "K", 1, 0)
 
 ```
@@ -45,7 +45,7 @@ PHPT$sex_bin <- ifelse(PHPT$sex == "K", 1, 0)
 
 ## Z jakimi cechami wiązało się występowanie zlamań w modelu logistycznym?
 ``` {r}
-model <- glm(fracture ~ group + sex_bin + age + nicotine_dependence + Ca + iPTH + Tscore_femur_neck + Tscore_femur_total + Tscore_lumbar + TBS, data = PHPT, family = binomial)
+model <- glm(fracture_bin ~ group + sex_bin + age + nicotine_dependence_bin + Ca + iPTH + Tscore_femur_neck + Tscore_femur_total + Tscore_lumbar + TBS, data = PHPT, family = binomial)
 summary(model)
 # OR
 exp(coef(model))
@@ -56,7 +56,7 @@ exp(confint(model))
 ## Model 0 
 
 ```{r}
-model0 <- glm(fracture ~ 1, data = PHPT, family = binomial)
+model0 <- glm(fracture_bin ~ 1, data = PHPT, family = binomial)
 summary(model0)
 exp(coef(model0))
 exp(confint(model0))
@@ -67,7 +67,7 @@ BIC(model0)
 ## Model 1 
 
 ```{r}
-model1 <- glm(fracture ~ age, data = PHPT, family = binomial)
+model1 <- glm(fracture_bin ~ age, data = PHPT, family = binomial)
 summary(model1)
 exp(coef(model1))
 exp(confint(model1))
@@ -77,7 +77,7 @@ BIC(model0, model1)
 ## Model 2
 
 ```{r}
-model2 <- glm(fracture ~ age + sex, data = PHPT, family = binomial)
+model2 <- glm(fracture_bin ~ age + sex_bin, data = PHPT, family = binomial)
 summary(model2)
 exp(coef(model2))
 exp(confint(model2))
@@ -87,7 +87,7 @@ BIC(model0, model1, model2)
 ## Model 3
 
 ```{r}
-model3 <- glm(fracture ~ age * sex , data = PHPT, family = binomial)
+model3 <- glm(fracture_bin ~ age * sex_bin , data = PHPT, family = binomial)
 summary(model3)
 exp(coef(model3))
 exp(confint(model3))
@@ -97,7 +97,7 @@ BIC(model0, model1, model2, model3)
 ## Model 4
 
 ```{r}
-model4 <- glm(fracture ~ age + sex + group, data = PHPT, family = binomial)
+model4 <- glm(fracture_bin ~ age + sex_bin + group, data = PHPT, family = binomial)
 summary(model4)
 exp(coef(model4))
 exp(confint(model4))
@@ -107,7 +107,7 @@ BIC(model0, model1, model2, model3, model4)
 ## Model 5
 
 ```{r}
-model5 <- glm(fracture ~ age + sex + group + TBS, data = PHPT, family = binomial)
+model5 <- glm(fracture_bin ~ age + sex_bin + group + TBS, data = PHPT, family = binomial)
 summary(model5)
 exp(coef(model5))
 exp(confint(model5))
@@ -117,7 +117,7 @@ BIC(model0, model1, model2, model3, model4, model5)
 ## Model 5B
 
 ```{r}
-model5B <- glm(fracture ~ age * sex + TBS, data = dplyr::filter(PHPT, group=="B"), family = binomial)
+model5B <- glm(fracture_bin ~ age * sex_bin + TBS, data = dplyr::filter(PHPT, group=="B"), family = binomial)
 summary(model5B)
 exp(coef(model5B))
 exp(confint(model5B))
@@ -128,7 +128,7 @@ BIC(model5B)
 ## Model 5K
 
 ```{r}
-model5K <- glm(fracture ~ age * sex + TBS, data = dplyr::filter(PHPT, group=="K"), family = binomial)
+model5K <- glm(fracture_bin ~ age * sex_bin + TBS, data = dplyr::filter(PHPT, group=="K"), family = binomial)
 summary(model5K)
 exp(coef(model5K))
 exp(confint(model5K))
@@ -138,7 +138,7 @@ BIC(model5K)
 ## Model 6
 
 ```{r}
-model6 <- glm(fracture ~ age + sex + group + TBS + nicotine_dependence + Ca + iPTH, data = PHPT, family = binomial)
+model6 <- glm(fracture_bin ~ age + sex_bin + group + TBS + nicotine_dependence_bin + Ca + iPTH, data = PHPT, family = binomial)
 summary(model6)
 exp(coef(model6))
 exp(confint(model6))
@@ -149,7 +149,7 @@ BIC(model0, model1, model2, model3, model4, model5, model6)
 ## Model 7
 
 ```{r}
-model7 <-  glm(fracture ~ age + sex + group + TBS + nicotine_dependence + Ca + iPTH + BMD_neck, data = PHPT, family = binomial)
+model7 <-  glm(fracture_bin ~ age + sex_bin + group + TBS + nicotine_dependence_bin + Ca + iPTH + BMD_neck, data = PHPT, family = binomial)
 summary(model7)
 exp(coef(model7))
 exp(confint(model7))
@@ -159,7 +159,7 @@ BIC(model0, model1, model2, model3, model4, model5, model6, model7)
 ## Model 8
 
 ```{r}
-model8 <- glm(fracture ~ age + sex + TBS + nicotine_dependence + Ca + iPTH + Tscore_femur_neck + Tscore_femur_total + Tscore_lumbar, data = PHPT, family = binomial)
+model8 <- glm(fracture_bin ~ age + sex_bin + TBS + nicotine_dependence_bin + Ca + iPTH + Tscore_femur_neck + Tscore_femur_total + Tscore_lumbar, data = PHPT, family = binomial)
 summary(model8)
 exp(coef(model8))
 exp(confint(model8))
@@ -169,7 +169,7 @@ BIC(model0, model1, model2, model3, model4, model5, model6, model7, model8)
 ## Model 9
 
 ```{r}
-model9 <- glm(fracture ~ age + sex + TBS + Tscore_femur_neck + Tscore_femur_total + Tscore_lumbar, data = PHPT, family = binomial)
+model9 <- glm(fracture_bin ~ age + sex_bin + TBS + Tscore_femur_neck + Tscore_femur_total + Tscore_lumbar, data = PHPT, family = binomial)
 summary(model9)
 exp(coef(model9))
 exp(confint(model9))
