@@ -542,6 +542,22 @@ ggplot(PHPT, aes(x = fracture, y = TBS, fill = fracture)) +
   theme(text = element_text(size = 16))
 ```
 
+# czy jest zwiazek miedzy zlamaniami w wywiadzie a TBS <1.2 i >1.2?
+```{r}
+PHPT_B <- PHPT %>%
+  filter(group == 'B')
+
+mosaicplot(~ fracture + TBS_split, data = PHPT_B, color = TRUE)
+
+fisher.test(table(PHPT_B$fracture, PHPT_B$TBS_split))
+
+pairwise_fisher_test(table(PHPT$fracture, PHPT$TBS_split), p.adjust.method = "fdr")
+
+PHPT %>%
+  group_by(group) %>%
+  count(nicotine_dependence)
+```
+
 #################################################################
 # correlations:
 # Ca a BMD_neck - grupa badana i kontrolna jako calość
