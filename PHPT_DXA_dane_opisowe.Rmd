@@ -133,7 +133,7 @@ PHPT %>%
   count(neuromuscular_symptoms)
 ```
 
-# wystepowanie zamania (fracture) - nie roznilo sie istotnie statystycznie w grupie badanej i kontrolnej
+# wystepowanie złamania (fracture) - nie roznilo sie istotnie statystycznie w grupie PHPT i kontrolnej:
 ```{r}
 mosaicplot(~ group + fracture, data = PHPT, color = TRUE)
 fisher.test(table(PHPT$group, PHPT$fracture))
