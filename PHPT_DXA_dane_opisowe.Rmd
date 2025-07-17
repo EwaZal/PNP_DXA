@@ -494,8 +494,10 @@ ggplot(data = subset(PHPT, TBS != "NA"), aes(x = group, y = TBS, fill = group)) 
   stat_compare_means(method = 'wilcox.test', size = 4) +
   theme_bw() +
   theme(legend.position = "none")
+```
 
-
+# wykres porownujacy TBS w grupie badanej i kontrolnej z podzialem na płeć:
+```{r}
 ggplot(PHPT, aes(x = group, y = TBS, fill = group)) +
   geom_boxplot(alpha = 0.5) +
   scale_fill_manual(values = c("gray89", "gray27"))  +
@@ -508,7 +510,7 @@ ggplot(PHPT, aes(x = group, y = TBS, fill = group)) +
   theme(text = element_text(size = 16))
 ```
 
-# wykres porownujacy TBS w grupie badanej i kontrolnej z podziałem na płeć:
+# wykres porownujacy TBS w grupie badanej i kontrolnej z podziałem na płeć i wiek przed i pomenopauzalny:
 ```{r}
 ggplot(data = subset(PHPT, TBS != "NA"), aes(x = group, y = TBS, fill = group)) +
   geom_boxplot(alpha = 0.5) +
@@ -524,6 +526,20 @@ ggplot(data = subset(PHPT, TBS != "NA"), aes(x = group, y = TBS, fill = group)) 
                sex = c('K' = 'female', 'M' = 'male'),
                age_split = c('preM' = 'premenopausal', 'postM' = 'postmenopausal')
              ))
+```
+
+# NOWE DO DOPISANIA: wykres porownujacy TBS w grupie badanej i kontrolnej pomiedzy osobami bez i ze złamaniami -  w grupie osób ze złamaniami w wywiadzie stwierdzono istotnie niższe TBS w grupie PHPT:
+```{r}
+ggplot(PHPT, aes(x = fracture, y = TBS, fill = fracture)) +
+  geom_boxplot(alpha = 0.5) +
+  scale_fill_manual(values = c("gray89", "gray27")) +
+  scale_x_discrete(labels= c("without fracture", "with fracture")) +
+  labs(x = NULL, y = "Trabecular bone score") +
+  stat_compare_means(method = 'wilcox.test', label = "p.format", size = 4) +
+  theme_bw() +
+  facet_wrap(vars(group), labeller = labeller(group = c('B' = 'PHPT group', 'K' = 'control group'))) +
+  theme(legend.position = "none") +
+  theme(text = element_text(size = 16))
 ```
 
 #################################################################
