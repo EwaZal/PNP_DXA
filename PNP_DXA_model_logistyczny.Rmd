@@ -1,6 +1,6 @@
 ---
-  title: "PHPT DXA"
-author: "Ewa Zalewska, Lukasz Cieszynski, Monika Berendt - Obolonczyk, Julia Tarnowska, Bartosz Brzezinski, Renata Swiatkowska-Stodulska"
+title: "PHPT DXA"
+author: "Ewa Zalewska"
 date:  "`r format(Sys.time(), '%e %b %Y, godz. %H:%M')`"
 output:
   html_document:
@@ -175,3 +175,7 @@ exp(coef(model9))
 exp(confint(model9))
 BIC(model0, model1, model2, model3, model4, model5, model6, model7, model8, model9)
 ```
+
+summary(PHPT$TBS)
+sum(is.na(PHPT$TBS))
+
