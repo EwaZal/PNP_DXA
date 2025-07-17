@@ -1,0 +1,678 @@
+library(dplyr)
+library(purrr)
+library(ggpubr)
+library(tidyr)
+library(scales)
+library(rstatix)
+library(ggplot2)
+library(ggpubr)
+
+plik_dane_do_analizy <- "PNP.RDS"
+
+if (file.exists(plik_dane_do_analizy)) {
+  PNP <- readRDS(plik_dane_do_analizy)
+} else {
+  stop(sprintf("Nie znaleziono pliku: `%s`. Uruchom notatnik przygotowujący zbiór danych!", plik_dane_do_analizy))
+}
+
+
+# Set global theme
+theme_set(theme_classic2(base_size = 13))
+
+PHPT <- PNP %>%
+  filter(group != "R")
+
+# sprawdzenie rozkladu:
+PHPT %>%
+  select(age, weight, Ca, Pi, iPTH, nOHD, aOHD, Cr, albumin, BMD_neck, HF_risk, MOF_risk, Tscore_femur_neck, Tscore_femur_total, Tscore_lumbar, Tscore_radial, zscore_femur_neck, zscore_femur_total, zscore_lumbar, zscore_radial) %>%
+  map(shapiro.test)
+
+PHPT %>%
+  filter(group == "B") %>%
+  select(age, weight, Ca, Pi, iPTH, nOHD, aOHD, Cr, albumin, BMD_neck, HF_risk, MOF_risk, Tscore_femur_neck, Tscore_femur_total, Tscore_lumbar, Tscore_radial, zscore_femur_neck, zscore_femur_total, zscore_lumbar, zscore_radial) %>%
+  map(shapiro.test)
+
+PHPT %>%
+  filter(group == "K") %>%
+  select(nOHD, BMD_neck, Tscore_femur_neck, Tscore_femur_total, Tscore_lumbar, Tscore_radial, zscore_femur_neck, zscore_femur_total, zscore_lumbar, zscore_radial) %>%
+  map(shapiro.test)
+
+# Rozklad normalny maja zmienne: nOHD, Tscore_femur_neck, Tscore_femur_total, Tscore_lumbar, Tscore_radial, zscore_femur_neck, zscore_femur_total, zscore_lumbar, zscore_radial
+
+
+# POROWNANIE GRUPY PC POD WZGLEDEM PROPORSJI PLCI
+mosaicplot(~ group + sex, data = PHPT, color = TRUE)
+fisher.test(table(PHPT$group, PHPT$sex))
+
+pairwise_fisher_test(table(PHPT$group, PHPT$sex), p.adjust.method = "fdr")
+
+PHPT %>%
+  group_by(group) %>%
+  count(sex)
+
+# wieku - dwie grupy i rozklad odbiega od normalnego:
+wilcox.test(age ~ group, data = subset(PHPT, group != "NA"))
+
+PHPT %>%
+  group_by(group) %>%
+  get_summary_stats(age, type = "quantile")
+
+# wieku - przy trzech grupach i rozkladnie normalnym
+# model <- aov(age ~ group, PHPT)
+# summary(model)
+# TukeyHSD(model)
+
+# BMI - grupy sa dobrane
+wilcox.test(BMI ~ group, data = subset(PHPT, group != "NA"))
+
+PHPT %>%
+  group_by(group) %>%
+  get_summary_stats(BMI, type = "quantile")
+
+
+# palacze:
+mosaicplot(~ group + nicotine_dependence, data = PHPT, color = TRUE)
+fisher.test(table(PHPT$group, PHPT$nicotine_dependence))
+
+pairwise_fisher_test(table(PHPT$group, PHPT$nicotine_dependence), p.adjust.method = "fdr")
+
+PHPT %>%
+  group_by(group) %>%
+  count(nicotine_dependence)
+
+# nephrolithiasis:
+mosaicplot(~ group + nephrolithiasis, data = PHPT, color = TRUE)
+fisher.test(table(PHPT$group, PHPT$nephrolithiasis))
+
+pairwise_fisher_test(table(PHPT$group, PHPT$nephrolithiasis), p.adjust.method = "fdr")
+
+PHPT %>%
+  group_by(group) %>%
+  count(nephrolithiasis)
+
+# neuromuscular_symptoms:
+mosaicplot(~ group + neuromuscular_symptoms, data = PHPT, color = TRUE)
+fisher.test(table(PHPT$group, PHPT$neuromuscular_symptoms))
+
+pairwise_fisher_test(table(PHPT$group, PHPT$neuromuscular_symptoms), p.adjust.method = "fdr")
+
+PHPT %>%
+  group_by(group) %>%
+  count(neuromuscular_symptoms)
+
+# fracture
+mosaicplot(~ group + fracture, data = PHPT, color = TRUE)
+fisher.test(table(PHPT$group, PHPT$fracture))
+
+pairwise_fisher_test(table(PHPT$group, PHPT$fracture), p.adjust.method = "fdr")
+
+PHPT %>%
+  group_by(group) %>%
+  count(fracture)
+
+############ BADANIA LABORATORYJNE #########################
+# Ca
+wilcox.test(Ca ~ group, data = subset(PHPT, group != "NA"))
+
+PHPT %>%
+  group_by(group) %>%
+  get_summary_stats(Ca, type = "quantile")
+
+# Pi
+wilcox.test(Pi ~ group, data = subset(PHPT, group != "NA"))
+
+PHPT %>%
+  group_by(group) %>%
+  get_summary_stats(Pi, type = "quantile")
+
+# iPTH
+wilcox.test(PTH_intact ~ group, data = subset(PHPT, group != "NA"))
+
+PHPT %>%
+  group_by(group) %>%
+  get_summary_stats(PTH_intact, type = "quantile")
+
+# 25OHD
+wilcox.test(nOHD ~ group, data = subset(PHPT, group != "NA"))
+
+PHPT %>%
+  group_by(group) %>%
+  get_summary_stats(nOHD, type = "quantile")
+
+# 1,25OHD
+t.test(aOHD ~ group, data = subset(PHPT, group != "NA"))
+
+PHPT %>%
+  group_by(group) %>%
+  get_summary_stats(aOHD, type = "quantile")
+
+# Cr
+wilcox.test(Cr ~ group, data = subset(PHPT, group != "NA"))
+
+PHPT %>%
+  group_by(group) %>%
+  get_summary_stats(Cr, type = "quantile")
+
+# albumin
+wilcox.test(albumin ~ group, data = subset(PHPT, group != "NA"))
+
+PHPT %>%
+  group_by(group) %>%
+  get_summary_stats(albumin, type = "quantile")
+
+############################### DXA #############################################
+# MOF_risk
+wilcox.test(MOF_risk ~ group, data = subset(PHPT, group != "NA"))
+
+PHPT %>%
+  group_by(group) %>%
+  get_summary_stats(MOF_risk, type = "quantile")
+
+# wybrane do plakatu
+# wykres porownujacy MOF_risk w grupie badanej i kontrolnej:
+ggplot(data = subset(PHPT, TBS != "NA"), aes(x = group, y = MOF_risk, fill = group)) +
+  geom_boxplot(alpha = 0.5) +
+  scale_fill_manual(values = c("gray89", "gray27"))  +
+  scale_x_discrete(labels= c("study group", "control group")) +
+  labs(x = " ", y = "Major osteoporotic fracture risk", title = "A") +
+  stat_compare_means(method = 'wilcox.test', label = "p.format", size = 4) +
+  theme_bw() +
+  theme(legend.position = "none") +
+  theme(text = element_text(size = 16))
+
+# box-plot porównujący wartości MOF_risk w grupie badanej i kontrolnej z podziałem ze względu na sex
+ggplot(data = subset(PHPT, MOF_risk != "NA"), aes(x = group, y = MOF_risk, fill = group)) +
+  geom_boxplot(alpha = 0.5) +
+  scale_fill_manual(values = c("gray89", "gray27"))  +
+  scale_x_discrete(labels= c("study group", "control group")) +
+  labs(x = " ", y = "MOF risk", title = 'A') +
+  stat_compare_means(method = 'wilcox.test', label = "p.format", size = 4) +
+  theme_bw() +
+  theme(legend.position = "none") +
+  facet_wrap(vars(sex), labeller = labeller(sex = c('K' = 'female', 'M' = 'male'))) +
+  theme(text = element_text(size = 12))
+
+##############
+# HF_risk
+wilcox.test(HF_risk ~ group, data = subset(PHPT, group != "NA"))
+
+PHPT %>%
+  group_by(group) %>%
+  get_summary_stats(HF_risk, type = "quantile")
+
+# WYBRANE DO PLAKATU:
+# wykres porownujacy HF_risk w grupie badanej i kontrolnej:
+ggplot(data = subset(PHPT, HF_risk != "NA"), aes(x = group, y = HF_risk, fill = group)) +
+  geom_boxplot(alpha = 0.5) +
+  scale_fill_manual(values = c("gray89", "gray27"))  +
+  scale_x_discrete(labels= c("study group", "control group")) +
+  labs(x = " ", y = "Hip fracture risk", title = "B") +
+  stat_compare_means(method = 'wilcox.test', label = "p.format", size = 4) +
+  theme_bw() +
+  theme(legend.position = "none") +
+  theme(text = element_text(size = 16))
+
+# box-plot porównujący wartości HF_risk w grupie badanej i kontrolnej z podziałem ze względu na sex
+ggplot(data = subset(PHPT, HF_risk != "NA"), aes(x = group, y = HF_risk, fill = group)) +
+  geom_boxplot(alpha = 0.5) +
+  scale_fill_manual(values = c("gray89", "gray27"))  +
+  scale_x_discrete(labels= c("study group", "control group")) +
+  labs(x = " ", y = "Hip fracture risk") +
+  stat_compare_means(method = 'wilcox.test', label = "p.format", size = 4) +
+  theme_bw() +
+  theme(legend.position = "none") +
+  facet_wrap(vars(sex), labeller = labeller(sex = c('K' = 'female', 'M' = 'male'))) +
+  theme(text = element_text(size = 12))
+
+##################
+# BMD_neck
+wilcox.test(BMD_neck ~ group, data = subset(PHPT, group != "NA"))
+
+PHPT %>%
+  group_by(group) %>%
+  get_summary_stats(BMD_neck, type = "quantile")
+
+# porównanie wartości BMD neck u kobiet w grupie badanej i kontrolnej
+t.test(BMD_neck ~ group, data = subset(PHPT, sex == 'K'))
+
+# porównanie wartości BMD neck u mezczyzn w grupie badanej i kontrolnej
+t.test(BMD_neck ~ group, data = subset(PHPT, sex == 'M'))
+
+# box-plot porównujący wartości BMD neck w grupie badanej i kontrolnej
+ggplot(PHPT, aes(x = group, y = BMD_neck, fill = group)) +
+  geom_boxplot(alpha = 0.5) +
+  scale_fill_manual(values = c("gray89", "gray27"))  +
+  scale_x_discrete(labels= c("study group", "control group")) +
+  labs(x = " ", y = "Femoral neck BMD") +
+  stat_compare_means(method = 't.test', label = "p.format", size = 4) +
+  theme_bw() +
+  theme(legend.position = "none")
+
+# WYBRANE DO PLAKATU:
+# box-plot porównujący wartości BMD neck w grupie badanej i kontrolnej z podziałem ze względu na sex
+ggplot(PHPT, aes(x = group, y = BMD_neck, fill = group)) +
+  geom_boxplot(alpha = 0.5) +
+  scale_fill_manual(values = c("gray89", "gray27"))  +
+  scale_x_discrete(labels= c("study group", "control group")) +
+  labs(x = " ", y = "Femoral neck BMD") +
+  stat_compare_means(method = 't.test', label = "p.format", size = 4) +
+  theme_bw() +
+  theme(legend.position = "none") +
+  facet_wrap(vars(sex), labeller = labeller(sex = c('K' = 'female', 'M' = 'male'))) +
+  theme(text = element_text(size = 16))
+
+# box-plot porównujący wartości BMD neck w grupie badanej i kontrolnej z podziałem ze względu na sex i na zlamania
+
+ggplot(data = subset(PHPT, fracture != "NA"), aes(x = group, y = BMD_neck, fill = group)) +
+  geom_boxplot(alpha = 0.5) +
+  scale_fill_manual(values = c("gray89", "gray27"))  +
+  labs(x = " ", y = "BMD neck") +
+  stat_compare_means(label = "p.format", method = 't.test') +
+  theme_bw()  +
+  theme(legend.position = "none") +
+  scale_x_discrete(labels= c("study group", "control group")) +
+  facet_grid(sex ~ fracture, 
+             labeller = labeller(
+               sex = c('K' = 'female', 'M' = 'male'),
+               fracture = c('N' = 'no fracture', 'Y' = 'fracture')
+             ))
+
+##################
+# Tscore_lumbar
+t.test(Tscore_lumbar ~ group, data = subset(PHPT, group != "NA"))
+
+PHPT %>%
+  group_by(group) %>%
+  get_summary_stats(Tscore_lumbar, type = "common")
+
+# wykres porownujacy Tscore_lumbar w grupie badanej i kontrolnej:
+ggplot(PHPT, aes(x = group, y = Tscore_lumbar, fill = group)) +
+  geom_boxplot(alpha = 0.5) +
+  scale_fill_manual(values = c("gray89", "gray27"))  +
+  scale_x_discrete(labels= c("study group", "control group")) +
+  labs(x = " ", y = "T-score lumbar site") +
+  stat_compare_means(method = 't.test', label = "p.format", size = 4) +
+  theme_bw() +
+  theme(legend.position = "none") +
+  theme(text = element_text(size = 16))
+
+# z podziałem ze względu na sex
+ggplot(PHPT, aes(x = group, y = Tscore_lumbar, fill = group)) +
+  geom_boxplot(alpha = 0.5) +
+  scale_fill_manual(values = c("gray89", "gray27"))  +
+  scale_x_discrete(labels= c("study group", "control group")) +
+  labs(x = " ", y = "T-score lumbar site") +
+  stat_compare_means(method = 't.test', label = "p.format", size = 4) +
+  theme_bw() +
+  theme(legend.position = "none") +
+  facet_wrap(vars(sex), labeller = labeller(sex = c('K' = 'female', 'M' = 'male'))) +
+  theme(text = element_text(size = 12))
+
+############
+# Tscore_femur_neck
+t.test(Tscore_femur_neck ~ group, data = subset(PHPT, group != "NA"))
+
+PHPT %>%
+  group_by(group) %>%
+  get_summary_stats(Tscore_femur_neck, type = "common")
+
+# Tscore_radial
+t.test(Tscore_radial ~ group, data = subset(PHPT, group != "NA"))
+
+PHPT %>%
+  group_by(group) %>%
+  get_summary_stats(Tscore_radial, type = "common")
+
+# PORÓWNANIE T-score radial pomiedzy grupa badaną a kontrolną
+
+# wykres porownujacy Tscore_radial w grupie badanej i kontrolnej:
+ggplot(PHPT, aes(x = group, y = Tscore_radial, fill = group)) +
+  geom_boxplot(alpha = 0.5) +
+  scale_fill_manual(values = c("gray89", "gray27"))  +
+  scale_x_discrete(labels= c("study group", "control group")) +
+  labs(x = " ", y = "T-score radial site") +
+  stat_compare_means(method = 't.test', label = "p.format", size = 4) +
+  theme_bw() +
+  theme(legend.position = "none") +
+  theme(text = element_text(size = 16))
+
+# z podziałem ze względu na sex
+ggplot(PHPT, aes(x = group, y = Tscore_radial, fill = group)) +
+  geom_boxplot(alpha = 0.5) +
+  scale_fill_manual(values = c("gray89", "gray27"))  +
+  scale_x_discrete(labels= c("study group", "control group")) +
+  labs(x = " ", y = "T-score radial site") +
+  stat_compare_means(method = 't.test', label = "p.format", size = 4) +
+  theme_bw() +
+  theme(legend.position = "none") +
+  facet_wrap(vars(sex), labeller = labeller(sex = c('K' = 'female', 'M' = 'male'))) +
+  theme(text = element_text(size = 12))
+
+###########################
+# zscore_lumbar
+t.test(zscore_lumbar ~ group, data = subset(PHPT, group != "NA"))
+
+PHPT %>%
+  group_by(group) %>%
+  get_summary_stats(zscore_lumbar, type = "common")
+
+# zscore_femur_neck
+t.test(zscore_femur_neck ~ group, data = subset(PHPT, group != "NA"))
+
+PHPT %>%
+  group_by(group) %>%
+  get_summary_stats(zscore_femur_neck, type = "common")
+
+# zscore_radial
+t.test(zscore_radial ~ group, data = subset(PHPT, group != "NA"))
+
+PHPT %>%
+  group_by(group) %>%
+  get_summary_stats(zscore_radial, type = "common")
+
+# PORÓWNANIE z-score radial pomiędzy grupą badaną a kontrolną
+ggplot(PHPT, aes(x = group, y = zscore_radial, fill = group)) +
+  geom_boxplot(alpha = 0.5) +
+  scale_fill_manual(values = c("gray89", "gray27"))  +
+  scale_x_discrete(labels= c("study group", "control group")) +
+  labs(x = " ", y = "Z-score radial site") +
+  stat_compare_means(method = 't.test', label = "p.format", size = 4) +
+  theme_bw() +
+  theme(legend.position = "none") +
+  theme(text = element_text(size = 16))
+
+# z podziałem ze względu na sex
+ggplot(PHPT, aes(x = group, y = zscore_radial, fill = group)) +
+  geom_boxplot(alpha = 0.5) +
+  scale_fill_manual(values = c("gray89", "gray27"))  +
+  scale_x_discrete(labels= c("study group", "control group")) +
+  labs(x = " ", y = "zZ-score radial site") +
+  stat_compare_means(method = 't.test', label = "p.format", size = 4) +
+  theme_bw() +
+  theme(legend.position = "none") +
+  facet_wrap(vars(sex), labeller = labeller(sex = c('K' = 'female', 'M' = 'male'))) +
+  theme(text = element_text(size = 12))
+
+
+# porownanie TBS w grupie badanej i kontrolnej:
+wilcox.test(TBS ~ group, data = subset(PHPT, group != "NA"))
+
+PHPT %>%
+  group_by(group) %>%
+  get_summary_stats(TBS, type = "quantile")
+
+# wykres porownujacy TBS w grupie badanej i kontrolnej:
+ggplot(data = subset(PHPT, TBS != "NA"), aes(x = group, y = TBS, fill = group)) +
+  geom_boxplot(alpha = 0.5) +
+  scale_fill_manual(values = c("gray89", "gray27"))  +
+  scale_x_discrete(labels= c("study group", "control group")) +
+  labs(x = " ", y = "TBS") +
+  stat_compare_means(method = 'wilcox.test', size = 4) +
+  theme_bw() +
+  theme(legend.position = "none")
+
+
+ggplot(PHPT, aes(x = group, y = TBS, fill = group)) +
+  geom_boxplot(alpha = 0.5) +
+  scale_fill_manual(values = c("gray89", "gray27"))  +
+  scale_x_discrete(labels= c("study group", "control group")) +
+  labs(x = NULL, y = "Trabecular bone score") +
+  stat_compare_means(method = 'wilcox.test', label = "p.format", size = 4) +
+  theme_bw() +
+  theme(legend.position = "none") +
+  theme(text = element_text(size = 16))
+
+ggplot(PHPT, aes(x = group, y = TBS, fill = group)) +
+  geom_boxplot(alpha = 0.5) +
+  scale_fill_manual(values = c("gray89", "gray27"))  +
+  scale_x_discrete(labels= c("study group", "control group")) +
+  labs(x = NULL, y = "Trabecular bone score") +
+  stat_compare_means(method = 'wilcox.test', label = "p.format", size = 4) +
+  theme_bw() +
+  facet_wrap(vars(sex), labeller = labeller(sex = c('K' = 'female', 'M' = 'male'))) +
+  theme(legend.position = "none") +
+  theme(text = element_text(size = 16))
+
+
+ggplot(data = subset(PHPT, TBS != "NA"), aes(x = group, y = TBS, fill = group)) +
+  geom_boxplot(alpha = 0.5) +
+  scale_fill_manual(values = c("gray89", "gray27"))  +
+  scale_x_discrete(labels= c("study group", "control group")) +
+  labs(x = " ", y = "Trabecular bone score") +
+  stat_compare_means(method = 'wilcox.test', label = "p.format", size = 4) +
+  theme_bw() +
+  theme(legend.position = "none") +
+  theme(text = element_text(size = 16)) +
+  facet_grid(sex ~ age_split, 
+             labeller = labeller(
+               sex = c('K' = 'female', 'M' = 'male'),
+               age_split = c('preM' = 'premenopausal', 'postM' = 'postmenopausal')
+             ))
+
+#################################################################
+# correlations:
+# Ca a BMD
+ggplot(PHPT, aes(Ca, BMD_neck)) +
+  geom_point() +
+  geom_smooth(method = "lm") +
+  theme_light() +
+  labs(x = "BMD femur neck", y ="Ca [mg/dL]") +
+  stat_cor(method = "spearman")
+
+# Ca a BMD
+ggplot(PHPT, aes(Ca, BMD_neck)) +
+  geom_point() +
+  geom_smooth(method = "lm") +
+  theme_light() +
+  facet_wrap(vars(group), labeller = labeller(group = c('B' = 'study group', 'K' = 'control group'))) +
+  labs(x = "BMD femur neck", y ="Ca [mg/dL]") +
+  stat_cor(method = "spearman")
+
+ggplot(PHPT, aes(Ca, BMD_neck)) +
+  geom_point() +
+  geom_smooth(method = "lm") +
+  theme_light() +
+  facet_wrap(vars(group), labeller = labeller(group = c('B' = 'study group', 'K' = 'control group'))) +
+  labs(x = "BMD femur neck", y ="Ca [mg/dL]") +
+  stat_cor(method = "spearman")
+
+# Ca a BMD w grupie badanej logarytm z Ca
+ggplot(PHPT, aes(log_Ca, BMD_neck)) +
+  geom_point() +
+  geom_smooth(method = "lm") +
+  theme_light() +
+  facet_wrap(vars(group), labeller = labeller(group = c('B' = 'study group', 'K' = 'control group'))) +
+  labs(x = "BMD femur neck", y ="logarithm of Ca [mg/dL]") +
+  stat_cor(method = "spearman")
+
+# Ca a BMD w grupie badanej logarytm z Ca i BMD
+ggplot(PHPT, aes(log_Ca, log_BMD)) +
+  geom_point() +
+  geom_smooth(method = "lm") +
+  theme_light() +
+  facet_wrap(vars(group), labeller = labeller(group = c('B' = 'study group', 'K' = 'control group'))) +
+  labs(x = "logarithm of BMD femur neck", y ="logarithm of Ca [mg/dL]") +
+  stat_cor(method = "spearman")
+
+# Ca a BMD w grupie badanej logarytm z BMD
+ggplot(PHPT, aes(Ca, log_BMD)) +
+  geom_point() +
+  geom_smooth(method = "lm") +
+  theme_light() +
+  facet_wrap(vars(group), labeller = labeller(group = c('B' = 'study group', 'K' = 'control group'))) +
+  labs(x = "logarithm of BMD femur neck", y ="Ca [mg/dL]") +
+  stat_cor(method = "spearman")
+
+
+
+# Ca a BMD z podzialem na grupe badana i kontrolna i ze wzgledu na plec
+ggplot(PHPT, aes(Ca, BMD_neck)) +
+  geom_point() +
+  geom_smooth(method = "lm") +
+  theme_light() +
+  labs(x = "BMD femur neck", y ="Ca [mg/dL]") +
+  facet_grid(sex ~ group, 
+             labeller = labeller(
+               group = c('B' = 'study group', 'K' = 'controls'),
+               sex = c('K' = 'female', 'M' = 'male')
+             )) +
+  stat_cor(method = "spearman")
+
+
+
+# PTH a BMD
+ggplot(PHPT, aes(PTH_intact, BMD_neck)) +
+  geom_point() +
+  geom_smooth(method = "lm") +
+  theme_light() +
+  labs(x = "BMD femur neck", y ="PTH") +
+  stat_cor(method = "pearson")
+
+ggplot(PHPT, aes(PTH_intact, BMD_neck)) +
+  geom_point() +
+  geom_smooth(method = "lm") +
+  theme_light() +
+  labs(x = "BMD femur neck", y ="PTH") +
+  stat_cor(method = "spearman")
+
+# logarithm
+ggplot(PHPT, aes(log_iPTH, BMD_neck)) +
+  geom_point() +
+  geom_smooth(method = "lm") +
+  theme_light() +
+  labs(x = "BMD femur neck", y ="logarithm of iPTH") +
+  stat_cor(method = "spearman")
+
+
+# PTH a BMD z podzialem na grupe (pearson)
+ggplot(PHPT, aes(PTH_intact, BMD_neck)) +
+  geom_point() +
+  geom_smooth(method = "lm") +
+  theme_light() +
+  facet_wrap(vars(group), labeller = labeller(group = c('B' = 'study group', 'K' = 'control group'))) +
+  labs(x = "BMD femur neck", y ="PTH") +
+  stat_cor(method = "pearson")
+
+
+# PTH a BMD z podzialem na grupe
+ggplot(PHPT, aes(PTH_intact, BMD_neck)) +
+  geom_point() +
+  geom_smooth(method = "lm") +
+  theme_light() +
+  facet_wrap(vars(group), labeller = labeller(group = c('B' = 'study group', 'K' = 'control group'))) +
+  labs(x = "BMD femur neck", y ="PTH") +
+  stat_cor(method = "spearman")
+
+
+##############################################################
+# korelacje w grupie badanej:
+# lab z BMD:
+# Ca a BMD w grupie badanej
+ggplot(PHPT, aes(Ca, BMD_neck)) +
+  geom_point() +
+  geom_smooth(method = "lm") +
+  theme_light() +
+  labs(x = "Ca [mg/dL]", y ="BMD femur neck") +
+  stat_cor(method = "spearman")
+
+# log iPTH a BMD
+ggplot(PHPT, aes(log_iPTH, BMD_neck)) +
+  geom_point() +
+  geom_smooth(method = "lm") +
+  theme_light() +
+  labs(x = "logarithm of iPTH", y ="BMD femur neck")
+stat_cor(method = "spearman")
+
+# z MOF_risk
+# Ca a  MOF
+ggplot(PHPT, aes(Ca, MOF_risk)) +
+  geom_point() +
+  geom_smooth(method = "lm")  +
+  labs(x = "Ca [mg/dl]", y ="Major osteoporotic fracture risk [%]") +
+  theme_light() +
+  stat_cor(method = "spearman")
+
+# z MOF_risk
+# iPTH a  MOF - brak korelacji
+ggplot(PHPT, aes(log_iPTH, MOF_risk)) +
+  geom_point() +
+  geom_smooth(method = "lm")  +
+  labs(x = "logarithm of iPTH [ng/dl]", y ="Major osteoporotic fracture risk [%]") +
+  theme_light() +
+  stat_cor(method = "spearman")
+
+# z HF_risk
+# Ca a  MOF
+ggplot(PHPT, aes(Ca, HF_risk)) +
+  geom_point() +
+  geom_smooth(method = "lm")  +
+  labs(x = "Ca [mg/dl]", y ="Hip fracture risk [%]") +
+  theme_light() +
+  stat_cor(method = "spearman")
+
+
+# z HF_risk
+# iPTH a  MOF - brak korelacji
+ggplot(PHPT, aes(log_iPTH, HF_risk)) +
+  geom_point() +
+  geom_smooth(method = "lm")  +
+  labs(x = "logarithm of iPTH [ng/dl]", y ="Hip fracture risk [%]") +
+  theme_light() +
+  stat_cor(method = "spearman")
+
+#################################################################
+# korelacje TBS
+# TBS a MOF w grupie badanej
+ggplot(PHPT, aes(TBS, MOF_risk)) +
+  geom_point() +
+  geom_smooth(method = "lm")  +
+  labs(x = "Trabecular bone score", y ="Major osteoporotic fracture risk [%]") +
+  theme_light() +
+  stat_cor(method = "spearman")
+
+# TBS a MOF w grupie badanej i kontrolnej
+ggplot(PHPT, aes(TBS, MOF_risk)) +
+  geom_point() +
+  geom_smooth(method = "lm")  +
+  labs(x = "Trabecular bone score", y ="Major osteoporotic fracture risk [%]") +
+  theme_light() +
+  facet_wrap(vars(group), labeller = labeller(group = c('B' = 'study group', 'K' = 'control group'))) +
+  stat_cor(method = "spearman")
+
+
+# TBS a HF w grupie badanej
+ggplot(PHPT, aes(TBS, HF_risk)) +
+  geom_point() +
+  geom_smooth(method = "lm")  +
+  labs(x = "Trabecular bone score", y ="Hip fracture risk [%]") +
+  theme_light() +
+  stat_cor(method = "spearman")
+
+# TBS a HF risk w grupach
+ggplot(PHPT, aes(TBS, HF_risk)) +
+  geom_point() +
+  geom_smooth(method = "lm")  +
+  labs(x = "Trabecular bone score", y ="Hip fracture risk [%]") +
+  theme_light() +
+  facet_wrap(vars(group), labeller = labeller(group = c('B' = 'study group', 'K' = 'control group'))) +
+  stat_cor(method = "spearman")
+
+
+# BMD a MOF w grupie badanej i kontrolnej
+ggplot(PHPT, aes(BMD_neck, MOF_risk)) +
+  geom_point() +
+  geom_smooth(method = "lm")  +
+  labs(x = "BMD of femur neck", y ="Major osteoporotic fracture risk [%]") +
+  theme_light() +
+  facet_wrap(vars(group), labeller = labeller(group = c('B' = 'study group', 'K' = 'control group'))) +
+  stat_cor(method = "spearman")
+
+
+# BMD a HF risk w grupach
+ggplot(PHPT, aes(BMD_neck, log_HF)) +
+  geom_point() +
+  geom_smooth(method = "lm")  +
+  labs(x = "BMD of femur neck", y ="logarithm of hip fracture risk [%]") +
+  theme_light() +
+  facet_wrap(vars(group), labeller = labeller(group = c('B' = 'study group', 'K' = 'control group'))) +
+  stat_cor(method = "spearman")
