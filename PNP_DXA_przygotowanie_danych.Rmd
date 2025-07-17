@@ -77,3 +77,20 @@ PHPT <- PHPT %>%
 plik_dane_do_analizy <- "PHPT.RDS"
 saveRDS(PHPT, plik_dane_do_analizy)
 ```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

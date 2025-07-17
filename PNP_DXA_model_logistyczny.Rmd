@@ -31,9 +31,12 @@ if (file.exists(plik_dane_do_analizy)) {
 }
 
 
-zmienne <- c("fracture", "nicotine_dependence")
-PHPT[zmienne] <- lapply(PHPT[zmienne], function(x) ifelse(x == "Y", 1, 0))
+# zmienne <- c("fracture", "nicotine_dependence")
+# PHPT[zmienne] <- lapply(PHPT[zmienne], function(x) ifelse(x == "Y", 1, 0))
 
+
+PHPT$fracture_bin <- ifelse(PHPT$fracture == "Y", 1, 0)
+PHPT$nicotine_dependence <- ifelse(PHPT$nicotine_dependence == "Y", 1, 0)
 PHPT$sex_bin <- ifelse(PHPT$sex == "K", 1, 0)
 
 ```
