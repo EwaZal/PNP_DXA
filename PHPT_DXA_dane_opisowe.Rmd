@@ -277,19 +277,14 @@ ggplot(data = subset(PHPT, HF_risk != "NA"), aes(x = group, y = HF_risk, fill = 
 ```
 
 ##################
-# BMD_neck
+# Gestosc mineralna szyjki kosci udowej (BMD_neck) 
+# porownanie miedzy grupa PHPT a kontrolną:
 ```{r}
 wilcox.test(BMD_neck ~ group, data = subset(PHPT, group != "NA"))
 
 PHPT %>%
   group_by(group) %>%
   get_summary_stats(BMD_neck, type = "quantile")
-
-# porównanie wartości BMD neck u kobiet w grupie badanej i kontrolnej
-t.test(BMD_neck ~ group, data = subset(PHPT, sex == 'K'))
-
-# porównanie wartości BMD neck u mezczyzn w grupie badanej i kontrolnej
-t.test(BMD_neck ~ group, data = subset(PHPT, sex == 'M'))
 
 # box-plot porównujący wartości BMD neck w grupie badanej i kontrolnej
 ggplot(PHPT, aes(x = group, y = BMD_neck, fill = group)) +
@@ -300,8 +295,17 @@ ggplot(PHPT, aes(x = group, y = BMD_neck, fill = group)) +
   stat_compare_means(method = 't.test', label = "p.format", size = 4) +
   theme_bw() +
   theme(legend.position = "none")
+```
 
-# WYBRANE DO PLAKATU:
+# porównanie wartości BMD neck u kobiet i mezczyzn w grupie badanej i kontrolnej
+```{r}
+# porównanie wartości BMD neck u kobiet w grupie badanej i kontrolnej
+wilcox.test(BMD_neck ~ group, data = subset(PHPT, sex == 'K'))
+
+# porównanie wartości BMD neck u mezczyzn w grupie badanej i kontrolnej
+wilcox.test(BMD_neck ~ group, data = subset(PHPT, sex == 'M'))
+
+# WYBRANE DO PLAKATU
 # box-plot porównujący wartości BMD neck w grupie badanej i kontrolnej z podziałem ze względu na sex
 ggplot(PHPT, aes(x = group, y = BMD_neck, fill = group)) +
   geom_boxplot(alpha = 0.5) +
@@ -313,9 +317,10 @@ ggplot(PHPT, aes(x = group, y = BMD_neck, fill = group)) +
   theme(legend.position = "none") +
   facet_wrap(vars(sex), labeller = labeller(sex = c('K' = 'female', 'M' = 'male'))) +
   theme(text = element_text(size = 16))
+```
 
 # box-plot porównujący wartości BMD neck w grupie badanej i kontrolnej z podziałem ze względu na sex i na zlamania
-
+```{r}
 ggplot(data = subset(PHPT, fracture != "NA"), aes(x = group, y = BMD_neck, fill = group)) +
   geom_boxplot(alpha = 0.5) +
   scale_fill_manual(values = c("gray89", "gray27"))  +
@@ -339,8 +344,9 @@ t.test(Tscore_lumbar ~ group, data = subset(PHPT, group != "NA"))
 PHPT %>%
   group_by(group) %>%
   get_summary_stats(Tscore_lumbar, type = "common")
-
+```
 # wykres porownujacy Tscore_lumbar w grupie badanej i kontrolnej:
+```{r}
 ggplot(PHPT, aes(x = group, y = Tscore_lumbar, fill = group)) +
   geom_boxplot(alpha = 0.5) +
   scale_fill_manual(values = c("gray89", "gray27"))  +
@@ -350,8 +356,10 @@ ggplot(PHPT, aes(x = group, y = Tscore_lumbar, fill = group)) +
   theme_bw() +
   theme(legend.position = "none") +
   theme(text = element_text(size = 16))
+```
 
 # z podziałem ze względu na sex
+```{r}
 ggplot(PHPT, aes(x = group, y = Tscore_lumbar, fill = group)) +
   geom_boxplot(alpha = 0.5) +
   scale_fill_manual(values = c("gray89", "gray27"))  +
@@ -396,8 +404,10 @@ ggplot(PHPT, aes(x = group, y = Tscore_radial, fill = group)) +
   theme_bw() +
   theme(legend.position = "none") +
   theme(text = element_text(size = 16))
+```
 
-# z podziałem ze względu na sex
+# wykres porownujacy Tscore_radial w grupie badanej i kontrolnej z podziałem ze względu na płeć:
+```{r}
 ggplot(PHPT, aes(x = group, y = Tscore_radial, fill = group)) +
   geom_boxplot(alpha = 0.5) +
   scale_fill_manual(values = c("gray89", "gray27"))  +
@@ -451,7 +461,7 @@ ggplot(PHPT, aes(x = group, y = zscore_radial, fill = group)) +
   theme(text = element_text(size = 16))
 ```
 
-# z podziałem ze względu na sex
+# PORÓWNANIE z-score radial pomiędzy grupą badaną a kontrolną z podziałem ze względu na płeć:
 ```{r}
 ggplot(PHPT, aes(x = group, y = zscore_radial, fill = group)) +
   geom_boxplot(alpha = 0.5) +
@@ -472,8 +482,10 @@ wilcox.test(TBS ~ group, data = subset(PHPT, group != "NA"))
 PHPT %>%
   group_by(group) %>%
   get_summary_stats(TBS, type = "quantile")
+```
 
 # wykres porownujacy TBS w grupie badanej i kontrolnej:
+```{r}
 ggplot(data = subset(PHPT, TBS != "NA"), aes(x = group, y = TBS, fill = group)) +
   geom_boxplot(alpha = 0.5) +
   scale_fill_manual(values = c("gray89", "gray27"))  +
@@ -491,26 +503,18 @@ ggplot(PHPT, aes(x = group, y = TBS, fill = group)) +
   labs(x = NULL, y = "Trabecular bone score") +
   stat_compare_means(method = 'wilcox.test', label = "p.format", size = 4) +
   theme_bw() +
-  theme(legend.position = "none") +
-  theme(text = element_text(size = 16))
-
-ggplot(PHPT, aes(x = group, y = TBS, fill = group)) +
-  geom_boxplot(alpha = 0.5) +
-  scale_fill_manual(values = c("gray89", "gray27"))  +
-  scale_x_discrete(labels= c("study group", "control group")) +
-  labs(x = NULL, y = "Trabecular bone score") +
-  stat_compare_means(method = 'wilcox.test', label = "p.format", size = 4) +
-  theme_bw() +
   facet_wrap(vars(sex), labeller = labeller(sex = c('K' = 'female', 'M' = 'male'))) +
   theme(legend.position = "none") +
   theme(text = element_text(size = 16))
+```
 
-
+# wykres porownujacy TBS w grupie badanej i kontrolnej z podziałem na płeć:
+```{r}
 ggplot(data = subset(PHPT, TBS != "NA"), aes(x = group, y = TBS, fill = group)) +
   geom_boxplot(alpha = 0.5) +
   scale_fill_manual(values = c("gray89", "gray27"))  +
   scale_x_discrete(labels= c("study group", "control group")) +
-  labs(x = " ", y = "Trabecular bone score") +
+  labs(x = NULL, y = "Trabecular bone score") +
   stat_compare_means(method = 'wilcox.test', label = "p.format", size = 4) +
   theme_bw() +
   theme(legend.position = "none") +
@@ -524,7 +528,7 @@ ggplot(data = subset(PHPT, TBS != "NA"), aes(x = group, y = TBS, fill = group)) 
 
 #################################################################
 # correlations:
-# Ca a BMD
+# Ca a BMD_neck - grupa badana i kontrolna jako calość
 ```{r}
 ggplot(PHPT, aes(Ca, BMD_neck)) +
   geom_point() +
@@ -534,7 +538,7 @@ ggplot(PHPT, aes(Ca, BMD_neck)) +
   stat_cor(method = "spearman")
 ```
 
-# Ca a BMD
+# Ca a BMD w grupie badanej i kontrolnej
 ```{r}
 ggplot(PHPT, aes(Ca, BMD_neck)) +
   geom_point() +
@@ -544,13 +548,6 @@ ggplot(PHPT, aes(Ca, BMD_neck)) +
   labs(x = "BMD femur neck", y ="Ca [mg/dL]") +
   stat_cor(method = "spearman")
 
-ggplot(PHPT, aes(Ca, BMD_neck)) +
-  geom_point() +
-  geom_smooth(method = "lm") +
-  theme_light() +
-  facet_wrap(vars(group), labeller = labeller(group = c('B' = 'study group', 'K' = 'control group'))) +
-  labs(x = "BMD femur neck", y ="Ca [mg/dL]") +
-  stat_cor(method = "spearman")
 ```
 
 # Ca a BMD w grupie badanej logarytm z Ca
@@ -585,7 +582,7 @@ ggplot(PHPT, aes(Ca, log_BMD)) +
   labs(x = "logarithm of BMD femur neck", y ="Ca [mg/dL]") +
   stat_cor(method = "spearman")
 ```
-
+##############################################################
 
 # Ca a BMD z podzialem na grupe badana i kontrolna i ze wzgledu na plec
 ```{r}
@@ -603,6 +600,42 @@ ggplot(PHPT, aes(Ca, BMD_neck)) +
 ```
 
 
+# Ca concentration a TBS - w grupie badanej i kontrolnej jako całość
+```{r}
+ggplot(PHPT, aes(TBS, Ca)) +
+  geom_point() +
+  geom_smooth(method = "lm")  +
+  labs(x = "Trabecular bone score", y ="Ca concentration [mg/dl]") +
+  theme_light() +
+  stat_cor(method = "spearman")
+```
+
+# Ca concentration a TBS - w grupie badanej i kontrolnej jako całość
+```{r}
+ggplot(PHPT, aes(Ca, TBS)) +
+  geom_point() +
+  geom_smooth(method = "lm") +
+  theme_light() +
+  facet_wrap(vars(group), labeller = labeller(group = c('B' = 'study group', 'K' = 'control group'))) +
+  labs(x = "Trabecular bone score", y ="Ca [mg/dL]") +
+  stat_cor(method = "spearman")
+```
+
+# Ca a TBS z podzialem na grupe badana i kontrolna i ze wzgledu na plec
+```{r}
+ggplot(PHPT, aes(Ca, TBS)) +
+  geom_point() +
+  geom_smooth(method = "lm") +
+  theme_light() +
+  labs(x = "Trabecular bone score", y ="Ca [mg/dL]") +
+  facet_grid(sex ~ group, 
+             labeller = labeller(
+               group = c('B' = 'study group', 'K' = 'controls'),
+               sex = c('K' = 'female', 'M' = 'male')
+             )) +
+  stat_cor(method = "spearman")
+```
+
 # PTH a BMD
 ```{r}
 ggplot(PHPT, aes(iPTH, BMD_neck)) +
@@ -611,16 +644,19 @@ ggplot(PHPT, aes(iPTH, BMD_neck)) +
   theme_light() +
   labs(x = "BMD femur neck", y ="PTH") +
   stat_cor(method = "pearson")
-
+```
+# PTH a BMD - w grupie badanej i kontrolnej
+```{r}
 ggplot(PHPT, aes(iPTH, BMD_neck)) +
   geom_point() +
   geom_smooth(method = "lm") +
   theme_light() +
+  facet_wrap(vars(group), labeller = labeller(group = c('B' = 'study group', 'K' = 'control group'))) +
   labs(x = "BMD femur neck", y ="PTH") +
   stat_cor(method = "spearman")
 ```
 
-# logarithm
+# iPTH - logarytm a BMD szyjki kości udowej
 ```{r}
 ggplot(PHPT, aes(log_iPTH, BMD_neck)) +
   geom_point() +
@@ -630,50 +666,18 @@ ggplot(PHPT, aes(log_iPTH, BMD_neck)) +
   stat_cor(method = "spearman")
 ```
 
-# PTH a BMD z podzialem na grupe (pearson)
-```{r}
-ggplot(PHPT, aes(iPTH, BMD_neck)) +
-  geom_point() +
-  geom_smooth(method = "lm") +
-  theme_light() +
-  facet_wrap(vars(group), labeller = labeller(group = c('B' = 'study group', 'K' = 'control group'))) +
-  labs(x = "BMD femur neck", y ="PTH") +
-  stat_cor(method = "pearson")
-```
 
-# PTH a BMD z podzialem na grupe
-```{r}
-ggplot(PHPT, aes(iPTH, BMD_neck)) +
-  geom_point() +
-  geom_smooth(method = "lm") +
-  theme_light() +
-  facet_wrap(vars(group), labeller = labeller(group = c('B' = 'study group', 'K' = 'control group'))) +
-  labs(x = "BMD femur neck", y ="PTH") +
-  stat_cor(method = "spearman")
-```
-
-##############################################################
-# korelacje w grupie badanej:
-# lab z BMD:
-# Ca a BMD w grupie badanej
-```{r}
-ggplot(PHPT, aes(Ca, BMD_neck)) +
-  geom_point() +
-  geom_smooth(method = "lm") +
-  theme_light() +
-  labs(x = "Ca [mg/dL]", y ="BMD femur neck") +
-  stat_cor(method = "spearman")
-```
-
-# log iPTH a BMD
+# PTH - logarytm a BMD z podzialem na grupy
 ```{r}
 ggplot(PHPT, aes(log_iPTH, BMD_neck)) +
   geom_point() +
   geom_smooth(method = "lm") +
   theme_light() +
-  labs(x = "logarithm of iPTH", y ="BMD femur neck")
-stat_cor(method = "spearman")
+  facet_wrap(vars(group), labeller = labeller(group = c('B' = 'study group', 'K' = 'control group'))) +
+  labs(x = "BMD femur neck", y ="PTH") +
+  stat_cor(method = "spearman")
 ```
+
 
 # z MOF_risk
 # Ca a  MOF
@@ -741,18 +745,6 @@ ggplot(PHPT, aes(TBS, MOF_risk)) +
   facet_wrap(vars(group), labeller = labeller(group = c('B' = 'study group', 'K' = 'control group'))) +
   stat_cor(method = "spearman")
 ```
-
-# TBS a Ca concentration
-```{r}
-ggplot(PHPT, aes(TBS, Ca)) +
-  geom_point() +
-  geom_smooth(method = "lm")  +
-  labs(x = "Trabecular bone score", y ="Ca concentration [mg/dl]") +
-  theme_light() +
-  stat_cor(method = "spearman")
-```
-
-
 
 # TBS a HF w grupie badanej
 ```{r}
