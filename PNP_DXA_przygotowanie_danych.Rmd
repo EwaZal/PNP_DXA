@@ -11,7 +11,7 @@ output:
 knitr::opts_chunk$set(warning = FALSE, message = FALSE) 
 ```
 
-```{r setup, include=FALSE}
+```{r setup, include=TRUE}
 library(tidyverse)
 library(readxl)
 library(writexl)
@@ -23,8 +23,9 @@ library(ggpubr)
 library(rstatix)
 library(modelr)
 library(broom)
+```
 
-
+```{r setup, include=TRUE}
 PNP <- read_delim("PNP_densytometria_10_04_25.csv", delim = ";", 
                   escape_double = FALSE,locale = locale(decimal_mark = "."), trim_ws = TRUE)
 
