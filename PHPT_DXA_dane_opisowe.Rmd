@@ -39,14 +39,14 @@ PHPT %>%
   select(age, weight, Ca, Pi, iPTH, nOHD, aOHD, Cr, albumin, BMD_neck, HF_risk, MOF_risk, Tscore_femur_neck, Tscore_femur_total, Tscore_lumbar, Tscore_radial, zscore_femur_neck, zscore_femur_total, zscore_lumbar, zscore_radial) %>%
   map(shapiro.test)
 ```
-# sprawdzenie rozkladu w obu grupie PHPT:
+# sprawdzenie rozkladu w grupie PHPT:
 ```{r}
 PHPT %>%
   filter(group == "B") %>%
   select(age, weight, Ca, Pi, iPTH, nOHD, aOHD, Cr, albumin, BMD_neck, HF_risk, MOF_risk, Tscore_femur_neck, Tscore_femur_total, Tscore_lumbar, Tscore_radial, zscore_femur_neck, zscore_femur_total, zscore_lumbar, zscore_radial) %>%
   map(shapiro.test)
 ```
-# sprawdzenie rozkladu w obu grupie kontrolnej:
+# sprawdzenie rozkladu w grupie kontrolnej:
 ```{r}
 PHPT %>%
   filter(group == "K") %>%
