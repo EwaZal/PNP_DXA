@@ -66,12 +66,13 @@ summary(PHPT_ml)
 
 ## Z jakimi cechami wiązało się występowanie zlamań w modelu logistycznym?
 ``` {r}
-model <- glm(fracture ~ group + sex + age + nicotine_dependence + Ca + iPTH + Tscore_femur_neck + Tscore_femur_total + Tscore_lumbar + TBS, data = PHPT_ml, family = binomial)
+model <- glm(fracture ~ group + sex + age + BMI + nicotine_dependence + Ca + iPTH + Tscore_femur_neck + Tscore_radial + Tscore_lumbar + TBS, data = PHPT_ml, family = binomial)
 summary(model)
 # OR
 exp(coef(model))
 # przedziały ufności 95%:
 exp(confint(model))
+BIC(model)
 ```
 
 ## Model 0 
@@ -159,7 +160,7 @@ BIC(model5K)
 ## Model 6
 
 ```{r}
-model6 <- glm(fracture ~ age + sex + group + TBS + nicotine_dependence + Ca + iPTH, data = PHPT_ml, family = binomial)
+model6 <- glm(fracture ~ age + sex + group + TBS + BMI + nicotine_dependence + Ca + iPTH, data = PHPT_ml, family = binomial)
 summary(model6)
 exp(coef(model6))
 exp(confint(model6))
@@ -170,7 +171,7 @@ BIC(model0, model1, model2, model3, model4, model5, model6)
 ## Model 7
 
 ```{r}
-model7 <-  glm(fracture ~ age + sex + group + TBS + nicotine_dependence + Ca + iPTH + BMD_neck, data = PHPT_ml, family = binomial)
+model7 <-  glm(fracture ~ age + sex + group + TBS + BMI + nicotine_dependence + Ca + iPTH + BMD_neck, data = PHPT_ml, family = binomial)
 summary(model7)
 exp(coef(model7))
 exp(confint(model7))
@@ -180,7 +181,7 @@ BIC(model0, model1, model2, model3, model4, model5, model6, model7)
 ## Model 8
 
 ```{r}
-model8 <- glm(fracture ~ age + sex + TBS + nicotine_dependence + Ca + iPTH + Tscore_femur_neck + Tscore_femur_total + Tscore_lumbar, data = PHPT_ml, family = binomial)
+model8 <- glm(fracture ~ age + sex + TBS + nicotine_dependence + BMI + Ca + iPTH + Tscore_femur_neck + Tscore_radial + Tscore_lumbar, data = PHPT_ml, family = binomial)
 summary(model8)
 exp(coef(model8))
 exp(confint(model8))
@@ -190,13 +191,21 @@ BIC(model0, model1, model2, model3, model4, model5, model6, model7, model8)
 ## Model 9
 
 ```{r}
-model9 <- glm(fracture ~ age + sex + TBS + Tscore_femur_neck + Tscore_femur_total + Tscore_lumbar, data = PHPT_ml, family = binomial)
+model9 <- glm(fracture ~ age + sex + TBS + Tscore_femur_neck + Tscore_radial + Tscore_lumbar, data = PHPT_ml, family = binomial)
 summary(model9)
 exp(coef(model9))
 exp(confint(model9))
 BIC(model0, model1, model2, model3, model4, model5, model6, model7, model8, model9)
 ```
 
-summary(PHPT_ml$TBS)
-sum(is.na(PHPT_ml$TBS))
+
+```{r}
+model10 <- glm(fracture ~ age + sex + BMI + nicotine_dependence + TBS + Tscore_femur_neck + Tscore_radial + Tscore_lumbar, data = PHPT_ml, family = binomial)
+summary(model10)
+exp(coef(model10))
+exp(confint(model10))
+BIC(model0, model1, model2, model3, model4, model5, model6, model7, model8, model9, model10)
+```
+
+colSums(is.na(PHPT_ml[, c("age", "sex", "BMI", TBS", "Tscore_femur_neck", "Tscore_lumbar", "T_score_radial")]))
 

@@ -351,78 +351,222 @@ display: none;
 
 <h1 class="title toc-ignore">PHPT DXA</h1>
 <h4 class="author">Ewa Zalewska</h4>
-<h4 class="date">17 lip 2025, godz. 20:31</h4>
+<h4 class="date">17 lip 2025, godz. 22:16</h4>
 
 </div>
 
 
+<div id="algorytm-mice" class="section level1">
+<h1>algorytm MICE</h1>
+<pre class="r"><code>kolumny_do_imputacji &lt;- c(&quot;TBS&quot;, &quot;Tscore_lumbar&quot;, &quot;Tscore_femur_neck&quot;, &quot;Tscore_radial&quot;)
+dane_subset &lt;- PHPT_ml[, kolumny_do_imputacji]
+
+imputacja &lt;- mice(dane_subset, m = 5, method = &#39;pmm&#39;, seed = 123)</code></pre>
+<pre><code>## 
+##  iter imp variable
+##   1   1  TBS  Tscore_lumbar  Tscore_femur_neck  Tscore_radial
+##   1   2  TBS  Tscore_lumbar  Tscore_femur_neck  Tscore_radial
+##   1   3  TBS  Tscore_lumbar  Tscore_femur_neck  Tscore_radial
+##   1   4  TBS  Tscore_lumbar  Tscore_femur_neck  Tscore_radial
+##   1   5  TBS  Tscore_lumbar  Tscore_femur_neck  Tscore_radial
+##   2   1  TBS  Tscore_lumbar  Tscore_femur_neck  Tscore_radial
+##   2   2  TBS  Tscore_lumbar  Tscore_femur_neck  Tscore_radial
+##   2   3  TBS  Tscore_lumbar  Tscore_femur_neck  Tscore_radial
+##   2   4  TBS  Tscore_lumbar  Tscore_femur_neck  Tscore_radial
+##   2   5  TBS  Tscore_lumbar  Tscore_femur_neck  Tscore_radial
+##   3   1  TBS  Tscore_lumbar  Tscore_femur_neck  Tscore_radial
+##   3   2  TBS  Tscore_lumbar  Tscore_femur_neck  Tscore_radial
+##   3   3  TBS  Tscore_lumbar  Tscore_femur_neck  Tscore_radial
+##   3   4  TBS  Tscore_lumbar  Tscore_femur_neck  Tscore_radial
+##   3   5  TBS  Tscore_lumbar  Tscore_femur_neck  Tscore_radial
+##   4   1  TBS  Tscore_lumbar  Tscore_femur_neck  Tscore_radial
+##   4   2  TBS  Tscore_lumbar  Tscore_femur_neck  Tscore_radial
+##   4   3  TBS  Tscore_lumbar  Tscore_femur_neck  Tscore_radial
+##   4   4  TBS  Tscore_lumbar  Tscore_femur_neck  Tscore_radial
+##   4   5  TBS  Tscore_lumbar  Tscore_femur_neck  Tscore_radial
+##   5   1  TBS  Tscore_lumbar  Tscore_femur_neck  Tscore_radial
+##   5   2  TBS  Tscore_lumbar  Tscore_femur_neck  Tscore_radial
+##   5   3  TBS  Tscore_lumbar  Tscore_femur_neck  Tscore_radial
+##   5   4  TBS  Tscore_lumbar  Tscore_femur_neck  Tscore_radial
+##   5   5  TBS  Tscore_lumbar  Tscore_femur_neck  Tscore_radial</code></pre>
+<pre class="r"><code>dane_imputowane &lt;- complete(imputacja, 1)
+
+PHPT_ml[, kolumny_do_imputacji] &lt;- dane_imputowane
+
+summary(PHPT_ml)</code></pre>
+<pre><code>##        no           sex           birthdate             group          
+##  Min.   :  1   Min.   :0.0000   Min.   :1931-08-01   Length:237        
+##  1st Qu.: 60   1st Qu.:1.0000   1st Qu.:1950-09-12   Class :character  
+##  Median :119   Median :1.0000   Median :1958-11-11   Mode  :character  
+##  Mean   :119   Mean   :0.9114   Mean   :1960-11-13                     
+##  3rd Qu.:178   3rd Qu.:1.0000   3rd Qu.:1969-05-15                     
+##  Max.   :237   Max.   :1.0000   Max.   :2004-10-29                     
+##                                                                        
+##    hosp_date               age            weight            high      
+##  Min.   :2013-09-02   Min.   :18.00   Min.   : 46.00   Min.   :142.0  
+##  1st Qu.:2020-08-25   1st Qu.:52.00   1st Qu.: 62.00   1st Qu.:160.0  
+##  Median :2021-08-24   Median :62.00   Median : 70.00   Median :164.0  
+##  Mean   :2021-05-04   Mean   :60.44   Mean   : 73.02   Mean   :165.2  
+##  3rd Qu.:2022-12-07   3rd Qu.:70.00   3rd Qu.: 82.00   3rd Qu.:169.0  
+##  Max.   :2024-10-17   Max.   :90.00   Max.   :139.00   Max.   :186.0  
+##                                                                       
+##       BMI              Ca              Pi             iPTH       
+##  Min.   :17.29   Min.   : 9.00   Min.   :1.400   Min.   : 20.40  
+##  1st Qu.:23.05   1st Qu.:10.10   1st Qu.:2.300   1st Qu.: 61.67  
+##  Median :25.76   Median :10.60   Median :2.600   Median : 89.85  
+##  Mean   :26.71   Mean   :10.79   Mean   :2.616   Mean   :114.00  
+##  3rd Qu.:30.11   3rd Qu.:11.10   3rd Qu.:2.900   3rd Qu.:128.50  
+##  Max.   :49.84   Max.   :15.50   Max.   :5.700   Max.   :922.00  
+##                                  NA&#39;s   :3       NA&#39;s   :3       
+##       nOHD            aOHD              Cr            albumin     
+##  Min.   : 5.40   Min.   : 25.20   Min.   :0.4900   Min.   :28.00  
+##  1st Qu.:20.32   1st Qu.: 53.67   1st Qu.:0.6800   1st Qu.:39.00  
+##  Median :27.30   Median : 64.25   Median :0.7700   Median :41.00  
+##  Mean   :28.03   Mean   : 68.69   Mean   :0.8075   Mean   :40.87  
+##  3rd Qu.:35.33   3rd Qu.: 78.92   3rd Qu.:0.8800   3rd Qu.:43.00  
+##  Max.   :57.50   Max.   :150.00   Max.   :2.1000   Max.   :50.00  
+##  NA&#39;s   :15      NA&#39;s   :173      NA&#39;s   :14       NA&#39;s   :63     
+##     DXA_date             fracture      parent_hip_fracture nicotine_dependence
+##  Min.   :2014-09-15   Min.   :0.0000   Length:237          Min.   :0.0000     
+##  1st Qu.:2020-08-12   1st Qu.:0.0000   Class :character    1st Qu.:0.0000     
+##  Median :2021-08-17   Median :0.0000   Mode  :character    Median :0.0000     
+##  Mean   :2021-04-30   Mean   :0.1055                       Mean   :0.1224     
+##  3rd Qu.:2022-12-30   3rd Qu.:0.0000                       3rd Qu.:0.0000     
+##  Max.   :2024-10-21   Max.   :1.0000                       Max.   :1.0000     
+##  NA&#39;s   :2                                                                    
+##       GC                 RA               BMD_neck           TBS       
+##  Length:237         Length:237         Min.   :0.4070   Min.   :0.944  
+##  Class :character   Class :character   1st Qu.:0.6235   1st Qu.:1.222  
+##  Mode  :character   Mode  :character   Median :0.7180   Median :1.303  
+##                                        Mean   :0.7100   Mean   :1.302  
+##                                        3rd Qu.:0.7870   3rd Qu.:1.384  
+##                                        Max.   :1.1520   Max.   :1.591  
+##                                        NA&#39;s   :3                       
+##     MOF_risk         HF_risk       Tscore_lumbar    Tscore_femur_neck
+##  Min.   : 0.400   Min.   : 0.000   Min.   :-4.900   Min.   :-4.000   
+##  1st Qu.: 2.300   1st Qu.: 0.200   1st Qu.:-2.100   1st Qu.:-2.200   
+##  Median : 3.900   Median : 0.600   Median :-1.300   Median :-1.500   
+##  Mean   : 5.038   Mean   : 1.471   Mean   :-1.323   Mean   :-1.492   
+##  3rd Qu.: 6.700   3rd Qu.: 1.900   3rd Qu.:-0.500   3rd Qu.:-0.700   
+##  Max.   :29.000   Max.   :22.000   Max.   : 2.000   Max.   : 1.500   
+##                                                                      
+##  Tscore_femur_total Tscore_radial    zscore_lumbar      zscore_femur_neck
+##  Min.   :-4.300     Min.   :-6.500   Min.   :-3.60000   Min.   :-3.0000  
+##  1st Qu.:-2.000     1st Qu.:-3.000   1st Qu.:-0.80000   1st Qu.:-0.7000  
+##  Median :-1.250     Median :-1.900   Median : 0.00000   Median :-0.2000  
+##  Mean   :-1.327     Mean   :-1.825   Mean   : 0.07522   Mean   :-0.0986  
+##  3rd Qu.:-0.525     3rd Qu.:-0.600   3rd Qu.: 0.97500   3rd Qu.: 0.5000  
+##  Max.   : 0.700     Max.   : 1.800   Max.   : 4.50000   Max.   : 3.1000  
+##  NA&#39;s   :147                         NA&#39;s   :7          NA&#39;s   :23       
+##  zscore_femur_total zscore_radial      DXA_result            VFA           
+##  Min.   :-3.4000    Min.   :-4.2000   Length:237         Length:237        
+##  1st Qu.:-0.8000    1st Qu.:-1.0000   Class :character   Class :character  
+##  Median :-0.1000    Median :-0.1500   Mode  :character   Mode  :character  
+##  Mean   :-0.1738    Mean   :-0.1257                                        
+##  3rd Qu.: 0.6000    3rd Qu.: 0.8000                                        
+##  Max.   : 2.2000    Max.   : 2.9000                                        
+##  NA&#39;s   :115        NA&#39;s   :11                                             
+##    symptoms         OFC_or_bone_pain   nephrolithiasis   
+##  Length:237         Length:237         Length:237        
+##  Class :character   Class :character   Class :character  
+##  Mode  :character   Mode  :character   Mode  :character  
+##                                                          
+##                                                          
+##                                                          
+##                                                          
+##  neuromuscular_symptoms bisfosfonian_treatment    log_iPTH         log_Ca     
+##  Length:237             Length:237             Min.   :3.016   Min.   :2.197  
+##  Class :character       Class :character       1st Qu.:4.122   1st Qu.:2.313  
+##  Mode  :character       Mode  :character       Median :4.498   Median :2.361  
+##                                                Mean   :4.506   Mean   :2.374  
+##                                                3rd Qu.:4.856   3rd Qu.:2.407  
+##                                                Max.   :6.827   Max.   :2.741  
+##                                                NA&#39;s   :3                      
+##     log_BMD           log_MOF            log_HF           log_TBS        
+##  Min.   :-0.8989   Min.   :-0.9163   Min.   :   -Inf   Min.   :-0.05763  
+##  1st Qu.:-0.4724   1st Qu.: 0.8329   1st Qu.:-1.6094   1st Qu.: 0.20701  
+##  Median :-0.3313   Median : 1.3610   Median :-0.5108   Median : 0.26773  
+##  Mean   :-0.3575   Mean   : 1.3632   Mean   :   -Inf   Mean   : 0.26163  
+##  3rd Qu.:-0.2395   3rd Qu.: 1.9021   3rd Qu.: 0.6419   3rd Qu.: 0.32534  
+##  Max.   : 0.1415   Max.   : 3.3673   Max.   : 3.0910   Max.   : 0.46436  
+##  NA&#39;s   :3                                             NA&#39;s   :45        
+##   TBS_split        
+##  Length:237        
+##  Class :character  
+##  Mode  :character  
+##                    
+##                    
+##                    
+## </code></pre>
 <div id="z-jakimi-cechami-wiązało-się-występowanie-zlamań-w-modelu-logistycznym" class="section level2">
 <h2>Z jakimi cechami wiązało się występowanie zlamań w modelu
 logistycznym?</h2>
-<pre class="r"><code>model &lt;- glm(fracture_bin ~ group + sex_bin + age + nicotine_dependence_bin + Ca + iPTH + Tscore_femur_neck + Tscore_femur_total + Tscore_lumbar + TBS, data = PHPT, family = binomial)
+<pre class="r"><code>model &lt;- glm(fracture ~ group + sex + age + BMI + nicotine_dependence + Ca + iPTH + Tscore_femur_neck + Tscore_femur_total + Tscore_lumbar + TBS, data = PHPT_ml, family = binomial)
 summary(model)</code></pre>
 <pre><code>## 
 ## Call:
-## glm(formula = fracture_bin ~ group + sex_bin + age + nicotine_dependence_bin + 
+## glm(formula = fracture ~ group + sex + age + BMI + nicotine_dependence + 
 ##     Ca + iPTH + Tscore_femur_neck + Tscore_femur_total + Tscore_lumbar + 
-##     TBS, family = binomial, data = PHPT)
+##     TBS, family = binomial, data = PHPT_ml)
 ## 
 ## Coefficients:
-##                           Estimate Std. Error z value Pr(&gt;|z|)  
-## (Intercept)             -2.0358736  7.3399891  -0.277   0.7815  
-## groupK                   2.2512836  1.1832447   1.903   0.0571 .
-## sex_bin                 -0.2492639  1.2476931  -0.200   0.8417  
-## age                      0.0282904  0.0476919   0.593   0.5531  
-## nicotine_dependence_bin  0.3535007  1.3077738   0.270   0.7869  
-## Ca                       0.1977008  0.4605929   0.429   0.6678  
-## iPTH                    -0.0005354  0.0054791  -0.098   0.9222  
-## Tscore_femur_neck       -0.5631949  0.8329012  -0.676   0.4989  
-## Tscore_femur_total       0.0689270  0.9997079   0.069   0.9450  
-## Tscore_lumbar            0.1335281  0.4792211   0.279   0.7805  
-## TBS                     -3.4921911  3.3273315  -1.050   0.2939  
+##                      Estimate Std. Error z value Pr(&gt;|z|)  
+## (Intercept)         -4.969220   7.473966  -0.665   0.5061  
+## groupK               1.834030   0.966117   1.898   0.0576 .
+## sex                 -1.341972   0.976698  -1.374   0.1694  
+## age                 -0.002980   0.037811  -0.079   0.9372  
+## BMI                  0.060358   0.075018   0.805   0.4211  
+## nicotine_dependence  0.380723   0.939834   0.405   0.6854  
+## Ca                   0.184849   0.386040   0.479   0.6321  
+## iPTH                 0.001297   0.002712   0.478   0.6323  
+## Tscore_femur_neck   -0.581197   0.600348  -0.968   0.3330  
+## Tscore_femur_total   0.109209   0.618485   0.177   0.8598  
+## Tscore_lumbar       -0.095184   0.348058  -0.273   0.7845  
+## TBS                 -0.446072   3.393885  -0.131   0.8954  
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
 ## (Dispersion parameter for binomial family taken to be 1)
 ## 
-##     Null deviance: 56.760  on 58  degrees of freedom
-## Residual deviance: 49.632  on 48  degrees of freedom
-##   (178 obserwacji zostało skasowanych z uwagi na braki w nich zawarte)
-## AIC: 71.632
+##     Null deviance: 80.363  on 87  degrees of freedom
+## Residual deviance: 70.370  on 76  degrees of freedom
+##   (149 obserwacji zostało skasowanych z uwagi na braki w nich zawarte)
+## AIC: 94.37
 ## 
 ## Number of Fisher Scoring iterations: 5</code></pre>
 <pre class="r"><code># OR
 exp(coef(model))</code></pre>
-<pre><code>##             (Intercept)                  groupK                 sex_bin 
-##              0.13056637              9.49992246              0.77937426 
-##                     age nicotine_dependence_bin                      Ca 
-##              1.02869442              1.42404403              1.21859772 
-##                    iPTH       Tscore_femur_neck      Tscore_femur_total 
-##              0.99946471              0.56938701              1.07135795 
-##           Tscore_lumbar                     TBS 
-##              1.14285340              0.03043412</code></pre>
+<pre><code>##         (Intercept)              groupK                 sex                 age 
+##         0.006948567         6.259062474         0.261329840         0.997024462 
+##                 BMI nicotine_dependence                  Ca                iPTH 
+##         1.062216643         1.463341873         1.203036502         1.001298246 
+##   Tscore_femur_neck  Tscore_femur_total       Tscore_lumbar                 TBS 
+##         0.559228325         1.115395841         0.909205513         0.640137932</code></pre>
 <pre class="r"><code># przedziały ufności 95%:
 exp(confint(model))</code></pre>
-<pre><code>##                                2.5 %       97.5 %
-## (Intercept)             7.887635e-08 5.691374e+05
-## groupK                  1.050152e+00 1.239751e+02
-## sex_bin                 8.163615e-02 1.753594e+01
-## age                     9.365824e-01 1.134956e+00
-## nicotine_dependence_bin 9.692498e-02 1.944963e+01
-## Ca                      4.863692e-01 3.126579e+00
-## iPTH                    9.871975e-01 1.009831e+00
-## Tscore_femur_neck       9.825644e-02 2.608040e+00
-## Tscore_femur_total      1.504340e-01 8.164237e+00
-## Tscore_lumbar           4.460778e-01 3.047245e+00
-## TBS                     3.257312e-05 2.146358e+01</code></pre>
+<pre><code>##                            2.5 %       97.5 %
+## (Intercept)         1.995299e-09 18221.145327
+## groupK              9.688660e-01    46.647770
+## sex                 3.830118e-02     2.016246
+## age                 9.220501e-01     1.072251
+## BMI                 9.140813e-01     1.236657
+## nicotine_dependence 2.064327e-01     8.970072
+## Ca                  5.513431e-01     2.568501
+## iPTH                9.959878e-01     1.006948
+## Tscore_femur_neck   1.570654e-01     1.691234
+## Tscore_femur_total  3.397901e-01     3.982752
+## Tscore_lumbar       4.557175e-01     1.813996
+## TBS                 7.769329e-04   556.617417</code></pre>
+<pre class="r"><code>BIC(model)</code></pre>
+<pre><code>## [1] 124.0976</code></pre>
 </div>
 <div id="model-0" class="section level2">
 <h2>Model 0</h2>
-<pre class="r"><code>model0 &lt;- glm(fracture_bin ~ 1, data = PHPT, family = binomial)
+<pre class="r"><code>model0 &lt;- glm(fracture ~ 1, data = PHPT_ml, family = binomial)
 summary(model0)</code></pre>
 <pre><code>## 
 ## Call:
-## glm(formula = fracture_bin ~ 1, family = binomial, data = PHPT)
+## glm(formula = fracture ~ 1, family = binomial, data = PHPT_ml)
 ## 
 ## Coefficients:
 ##             Estimate Std. Error z value Pr(&gt;|z|)    
@@ -448,11 +592,11 @@ summary(model0)</code></pre>
 </div>
 <div id="model-1" class="section level2">
 <h2>Model 1</h2>
-<pre class="r"><code>model1 &lt;- glm(fracture_bin ~ age, data = PHPT, family = binomial)
+<pre class="r"><code>model1 &lt;- glm(fracture ~ age, data = PHPT_ml, family = binomial)
 summary(model1)</code></pre>
 <pre><code>## 
 ## Call:
-## glm(formula = fracture_bin ~ age, family = binomial, data = PHPT)
+## glm(formula = fracture ~ age, family = binomial, data = PHPT_ml)
 ## 
 ## Coefficients:
 ##             Estimate Std. Error z value Pr(&gt;|z|)   
@@ -482,18 +626,17 @@ summary(model1)</code></pre>
 </div>
 <div id="model-2" class="section level2">
 <h2>Model 2</h2>
-<pre class="r"><code>model2 &lt;- glm(fracture_bin ~ age + sex_bin, data = PHPT, family = binomial)
+<pre class="r"><code>model2 &lt;- glm(fracture ~ age + sex, data = PHPT_ml, family = binomial)
 summary(model2)</code></pre>
 <pre><code>## 
 ## Call:
-## glm(formula = fracture_bin ~ age + sex_bin, family = binomial, 
-##     data = PHPT)
+## glm(formula = fracture ~ age + sex, family = binomial, data = PHPT_ml)
 ## 
 ## Coefficients:
 ##             Estimate Std. Error z value Pr(&gt;|z|)   
 ## (Intercept) -2.99848    1.15419  -2.598  0.00938 **
 ## age          0.02060    0.01599   1.288  0.19768   
-## sex_bin     -0.46255    0.66898  -0.691  0.48930   
+## sex         -0.46255    0.66898  -0.691  0.48930   
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
@@ -505,13 +648,13 @@ summary(model2)</code></pre>
 ## 
 ## Number of Fisher Scoring iterations: 5</code></pre>
 <pre class="r"><code>exp(coef(model2))</code></pre>
-<pre><code>## (Intercept)         age     sex_bin 
+<pre><code>## (Intercept)         age         sex 
 ##  0.04986301  1.02081220  0.62967442</code></pre>
 <pre class="r"><code>exp(confint(model2))</code></pre>
 <pre><code>##                   2.5 %    97.5 %
 ## (Intercept) 0.004263961 0.4053141
 ## age         0.990523265 1.0549354
-## sex_bin     0.189881512 2.8591168</code></pre>
+## sex         0.189881512 2.8591168</code></pre>
 <pre class="r"><code>BIC(model0, model1, model2)</code></pre>
 <pre><code>##        df      BIC
 ## model0  1 165.1922
@@ -520,19 +663,18 @@ summary(model2)</code></pre>
 </div>
 <div id="model-3" class="section level2">
 <h2>Model 3</h2>
-<pre class="r"><code>model3 &lt;- glm(fracture_bin ~ age * sex_bin , data = PHPT, family = binomial)
+<pre class="r"><code>model3 &lt;- glm(fracture ~ age * sex , data = PHPT_ml, family = binomial)
 summary(model3)</code></pre>
 <pre><code>## 
 ## Call:
-## glm(formula = fracture_bin ~ age * sex_bin, family = binomial, 
-##     data = PHPT)
+## glm(formula = fracture ~ age * sex, family = binomial, data = PHPT_ml)
 ## 
 ## Coefficients:
 ##             Estimate Std. Error z value Pr(&gt;|z|)
 ## (Intercept) -7.73830    4.94174  -1.566    0.117
 ## age          0.09311    0.07129   1.306    0.192
-## sex_bin      4.76737    5.05940   0.942    0.346
-## age:sex_bin -0.08025    0.07327  -1.095    0.273
+## sex          4.76737    5.05940   0.942    0.346
+## age:sex     -0.08025    0.07327  -1.095    0.273
 ## 
 ## (Dispersion parameter for binomial family taken to be 1)
 ## 
@@ -542,14 +684,14 @@ summary(model3)</code></pre>
 ## 
 ## Number of Fisher Scoring iterations: 6</code></pre>
 <pre class="r"><code>exp(coef(model3))</code></pre>
-<pre><code>##  (Intercept)          age      sex_bin  age:sex_bin 
+<pre><code>##  (Intercept)          age          sex      age:sex 
 ## 4.358138e-04 1.097578e+00 1.176101e+02 9.228826e-01</code></pre>
 <pre class="r"><code>exp(confint(model3))</code></pre>
 <pre><code>##                    2.5 %       97.5 %
 ## (Intercept) 5.627128e-10 3.423733e-01
 ## age         9.897701e-01 1.324352e+00
-## sex_bin     9.099407e-02 1.033023e+08
-## age:sex_bin 7.631399e-01 1.030470e+00</code></pre>
+## sex         9.099407e-02 1.033023e+08
+## age:sex     7.631399e-01 1.030470e+00</code></pre>
 <pre class="r"><code>BIC(model0, model1, model2, model3)</code></pre>
 <pre><code>##        df      BIC
 ## model0  1 165.1922
@@ -559,18 +701,18 @@ summary(model3)</code></pre>
 </div>
 <div id="model-4" class="section level2">
 <h2>Model 4</h2>
-<pre class="r"><code>model4 &lt;- glm(fracture_bin ~ age + sex_bin + group, data = PHPT, family = binomial)
+<pre class="r"><code>model4 &lt;- glm(fracture ~ age + sex + group, data = PHPT_ml, family = binomial)
 summary(model4)</code></pre>
 <pre><code>## 
 ## Call:
-## glm(formula = fracture_bin ~ age + sex_bin + group, family = binomial, 
-##     data = PHPT)
+## glm(formula = fracture ~ age + sex + group, family = binomial, 
+##     data = PHPT_ml)
 ## 
 ## Coefficients:
 ##             Estimate Std. Error z value Pr(&gt;|z|)   
 ## (Intercept) -3.25018    1.15616  -2.811  0.00494 **
 ## age          0.02057    0.01576   1.305  0.19174   
-## sex_bin     -0.38751    0.67632  -0.573  0.56666   
+## sex         -0.38751    0.67632  -0.573  0.56666   
 ## groupK       0.76377    0.46896   1.629  0.10339   
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
@@ -583,13 +725,13 @@ summary(model4)</code></pre>
 ## 
 ## Number of Fisher Scoring iterations: 5</code></pre>
 <pre class="r"><code>exp(coef(model4))</code></pre>
-<pre><code>## (Intercept)         age     sex_bin      groupK 
+<pre><code>## (Intercept)         age         sex      groupK 
 ##  0.03876708  1.02078168  0.67874292  2.14634224</code></pre>
 <pre class="r"><code>exp(confint(model4))</code></pre>
 <pre><code>##                   2.5 %    97.5 %
 ## (Intercept) 0.003299204 0.3183091
 ## age         0.990986147 1.0545272
-## sex_bin     0.201773657 3.1195112
+## sex         0.201773657 3.1195112
 ## groupK      0.817817464 5.2555840</code></pre>
 <pre class="r"><code>BIC(model0, model1, model2, model3, model4)</code></pre>
 <pre><code>##        df      BIC
@@ -601,41 +743,40 @@ summary(model4)</code></pre>
 </div>
 <div id="model-5" class="section level2">
 <h2>Model 5</h2>
-<pre class="r"><code>model5 &lt;- glm(fracture_bin ~ age + sex_bin + group + TBS, data = PHPT, family = binomial)
+<pre class="r"><code>model5 &lt;- glm(fracture ~ age + sex + group + TBS, data = PHPT_ml, family = binomial)
 summary(model5)</code></pre>
 <pre><code>## 
 ## Call:
-## glm(formula = fracture_bin ~ age + sex_bin + group + TBS, family = binomial, 
-##     data = PHPT)
+## glm(formula = fracture ~ age + sex + group + TBS, family = binomial, 
+##     data = PHPT_ml)
 ## 
 ## Coefficients:
-##             Estimate Std. Error z value Pr(&gt;|z|)   
-## (Intercept)  4.81148    3.58969   1.340  0.18013   
-## age          0.01511    0.02270   0.666  0.50572   
-## sex_bin     -0.80771    0.71742  -1.126  0.26023   
-## groupK       1.07279    0.57086   1.879  0.06021 . 
-## TBS         -5.86635    2.22220  -2.640  0.00829 **
+##             Estimate Std. Error z value Pr(&gt;|z|)  
+## (Intercept)  3.46422    2.88365   1.201   0.2296  
+## age          0.00563    0.01750   0.322   0.7476  
+## sex         -0.30898    0.69497  -0.445   0.6566  
+## groupK       0.96749    0.48784   1.983   0.0473 *
+## TBS         -4.64011    1.84866  -2.510   0.0121 *
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
 ## (Dispersion parameter for binomial family taken to be 1)
 ## 
-##     Null deviance: 128.31  on 191  degrees of freedom
-## Residual deviance: 114.68  on 187  degrees of freedom
-##   (45 obserwacji zostało skasowanych z uwagi na braki w nich zawarte)
-## AIC: 124.68
+##     Null deviance: 159.72  on 236  degrees of freedom
+## Residual deviance: 148.82  on 232  degrees of freedom
+## AIC: 158.82
 ## 
-## Number of Fisher Scoring iterations: 6</code></pre>
+## Number of Fisher Scoring iterations: 5</code></pre>
 <pre class="r"><code>exp(coef(model5))</code></pre>
-<pre><code>##  (Intercept)          age      sex_bin       groupK          TBS 
-## 1.229134e+02 1.015220e+00 4.458764e-01 2.923535e+00 2.833206e-03</code></pre>
+<pre><code>##  (Intercept)          age          sex       groupK          TBS 
+## 31.951581182  1.005645395  0.734198015  2.631324509  0.009656624</code></pre>
 <pre class="r"><code>exp(confint(model5))</code></pre>
 <pre><code>##                    2.5 %       97.5 %
-## (Intercept) 1.113240e-01 1.610021e+05
-## age         9.718773e-01 1.063190e+00
-## sex_bin     1.183626e-01 2.162695e+00
-## groupK      9.090893e-01 8.851813e+00
-## TBS         3.174619e-05 2.116127e-01</code></pre>
+## (Intercept) 0.1079606622 9726.3459496
+## age         0.9722362727    1.0418285
+## sex         0.2104321547    3.4891674
+## groupK      0.9739628699    6.7533169
+## TBS         0.0002384321    0.3533469</code></pre>
 <pre class="r"><code>BIC(model0, model1, model2, model3, model4, model5)</code></pre>
 <pre><code>##        df      BIC
 ## model0  1 165.1922
@@ -643,133 +784,133 @@ summary(model5)</code></pre>
 ## model2  3 174.0596
 ## model3  4 177.7725
 ## model4  4 177.0639
-## model5  5 140.9663</code></pre>
+## model5  5 176.1570</code></pre>
 </div>
 <div id="model-5b" class="section level2">
 <h2>Model 5B</h2>
-<pre class="r"><code>model5B &lt;- glm(fracture_bin ~ age * sex_bin + TBS, data = dplyr::filter(PHPT, group==&quot;B&quot;), family = binomial)
+<pre class="r"><code>model5B &lt;- glm(fracture ~ age * sex + TBS, data = dplyr::filter(PHPT_ml, group==&quot;B&quot;), family = binomial)
 summary(model5B)</code></pre>
 <pre><code>## 
 ## Call:
-## glm(formula = fracture_bin ~ age * sex_bin + TBS, family = binomial, 
-##     data = dplyr::filter(PHPT, group == &quot;B&quot;))
+## glm(formula = fracture ~ age * sex + TBS, family = binomial, 
+##     data = dplyr::filter(PHPT_ml, group == &quot;B&quot;))
 ## 
 ## Coefficients:
-##             Estimate Std. Error z value Pr(&gt;|z|)
-## (Intercept) -15.2427    15.9377  -0.956    0.339
-## age           0.2630     0.2076   1.266    0.205
-## sex_bin      14.1146    15.8102   0.893    0.372
-## TBS          -3.9190     2.5071  -1.563    0.118
-## age:sex_bin  -0.2064     0.2103  -0.981    0.326
+##             Estimate Std. Error z value Pr(&gt;|z|)  
+## (Intercept) -16.7643    18.4796  -0.907   0.3643  
+## age           0.2843     0.2414   1.178   0.2390  
+## sex          17.2219    18.3295   0.940   0.3474  
+## TBS          -4.1636     2.2293  -1.868   0.0618 .
+## age:sex      -0.2470     0.2428  -1.018   0.3089  
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
 ## (Dispersion parameter for binomial family taken to be 1)
 ## 
-##     Null deviance: 94.394  on 156  degrees of freedom
-## Residual deviance: 79.184  on 152  degrees of freedom
-##   (34 obserwacje zostały skasowane z uwagi na braki w nich zawarte)
-## AIC: 89.184
+##     Null deviance: 114.688  on 190  degrees of freedom
+## Residual deviance:  99.667  on 186  degrees of freedom
+## AIC: 109.67
 ## 
 ## Number of Fisher Scoring iterations: 8</code></pre>
 <pre class="r"><code>exp(coef(model5B))</code></pre>
-<pre><code>##  (Intercept)          age      sex_bin          TBS  age:sex_bin 
-## 2.399938e-07 1.300776e+00 1.348695e+06 1.986023e-02 8.135298e-01</code></pre>
+<pre><code>##  (Intercept)          age          sex          TBS      age:sex 
+## 5.240313e-08 1.328809e+00 3.015637e+07 1.555184e-02 7.811140e-01</code></pre>
 <pre class="r"><code>exp(confint(model5B))</code></pre>
 <pre><code>##                    2.5 %       97.5 %
-## (Intercept) 3.054700e-34 1.075500e+02
-## age         1.015459e+00 2.921659e+00
-## sex_bin     1.035522e-02 1.558953e+33
-## TBS         1.345163e-04 2.863829e+00
-## age:sex_bin 3.612783e-01 1.055742e+00</code></pre>
+## (Intercept) 2.979093e-36 1.080603e+02
+## age         1.012806e+00 3.106475e+00
+## sex         5.601103e-02 6.040490e+35
+## TBS         1.732679e-04 1.166838e+00
+## age:sex     3.335731e-01 1.032918e+00</code></pre>
 <pre class="r"><code>BIC(model5B)</code></pre>
-<pre><code>## [1] 104.4654</code></pre>
+<pre><code>## [1] 125.9281</code></pre>
 </div>
 <div id="model-5k" class="section level2">
 <h2>Model 5K</h2>
-<pre class="r"><code>model5K &lt;- glm(fracture_bin ~ age * sex_bin + TBS, data = dplyr::filter(PHPT, group==&quot;K&quot;), family = binomial)
+<pre class="r"><code>model5K &lt;- glm(fracture ~ age * sex + TBS, data = dplyr::filter(PHPT_ml, group==&quot;K&quot;), family = binomial)
 summary(model5K)</code></pre>
 <pre><code>## 
 ## Call:
-## glm(formula = fracture_bin ~ age * sex_bin + TBS, family = binomial, 
-##     data = dplyr::filter(PHPT, group == &quot;K&quot;))
+## glm(formula = fracture ~ age * sex + TBS, family = binomial, 
+##     data = dplyr::filter(PHPT_ml, group == &quot;K&quot;))
 ## 
 ## Coefficients:
-##               Estimate Std. Error z value Pr(&gt;|z|)  
-## (Intercept)  22.429441  11.400376   1.967   0.0491 *
-## age           0.005642   0.071702   0.079   0.9373  
-## sex_bin       6.387083   5.294904   1.206   0.2277  
-## TBS         -17.594695   7.670986  -2.294   0.0218 *
-## age:sex_bin  -0.135967   0.096050  -1.416   0.1569  
-## ---
-## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+##             Estimate Std. Error z value Pr(&gt;|z|)
+## (Intercept)  4.18594    5.52273   0.758    0.448
+## age          0.01983    0.06476   0.306    0.759
+## sex          4.66933    4.44532   1.050    0.294
+## TBS         -5.44280    3.69064  -1.475    0.140
+## age:sex     -0.07530    0.07374  -1.021    0.307
 ## 
 ## (Dispersion parameter for binomial family taken to be 1)
 ## 
-##     Null deviance: 32.070  on 34  degrees of freedom
-## Residual deviance: 22.533  on 30  degrees of freedom
-##   (11 obserwacji zostało skasowanych z uwagi na braki w nich zawarte)
-## AIC: 32.533
+##     Null deviance: 42.507  on 45  degrees of freedom
+## Residual deviance: 38.106  on 41  degrees of freedom
+## AIC: 48.106
 ## 
-## Number of Fisher Scoring iterations: 6</code></pre>
+## Number of Fisher Scoring iterations: 5</code></pre>
 <pre class="r"><code>exp(coef(model5K))</code></pre>
-<pre><code>##  (Intercept)          age      sex_bin          TBS  age:sex_bin 
-## 5.507856e+09 1.005658e+00 5.941211e+02 2.284131e-08 8.728713e-01</code></pre>
+<pre><code>##  (Intercept)          age          sex          TBS      age:sex 
+## 6.575506e+01 1.020023e+00 1.066259e+02 4.327354e-03 9.274657e-01</code></pre>
 <pre class="r"><code>exp(confint(model5K))</code></pre>
 <pre><code>##                    2.5 %       97.5 %
-## (Intercept) 1.148904e+00 6.943759e+21
-## age         8.890416e-01 1.313314e+00
-## sex_bin     1.030980e-01 6.383021e+10
-## TBS         8.497110e-17 5.459257e-03
-## age:sex_bin 6.447291e-01 1.026041e+00</code></pre>
+## (Intercept) 7.019773e-05 3.220312e+06
+## age         9.034749e-01 1.217703e+00
+## sex         9.609919e-02 2.738440e+07
+## TBS         1.745359e-06 4.944012e+00
+## age:sex     7.690653e-01 1.059659e+00</code></pre>
 <pre class="r"><code>BIC(model5K)</code></pre>
-<pre><code>## [1] 40.30974</code></pre>
+<pre><code>## [1] 57.24876</code></pre>
 </div>
 <div id="model-6" class="section level2">
 <h2>Model 6</h2>
-<pre class="r"><code>model6 &lt;- glm(fracture_bin ~ age + sex_bin + group + TBS + nicotine_dependence_bin + Ca + iPTH, data = PHPT, family = binomial)
+<pre class="r"><code>model6 &lt;- glm(fracture ~ age + sex + group + TBS + BMI + nicotine_dependence + Ca + iPTH, data = PHPT_ml, family = binomial)
 summary(model6)</code></pre>
 <pre><code>## 
 ## Call:
-## glm(formula = fracture_bin ~ age + sex_bin + group + TBS + nicotine_dependence_bin + 
-##     Ca + iPTH, family = binomial, data = PHPT)
+## glm(formula = fracture ~ age + sex + group + TBS + BMI + nicotine_dependence + 
+##     Ca + iPTH, family = binomial, data = PHPT_ml)
 ## 
 ## Coefficients:
-##                          Estimate Std. Error z value Pr(&gt;|z|)  
-## (Intercept)              0.882301   5.401165   0.163   0.8702  
-## age                      0.013219   0.023946   0.552   0.5809  
-## sex_bin                 -0.410758   0.840998  -0.488   0.6253  
-## groupK                   1.671908   0.691361   2.418   0.0156 *
-## TBS                     -5.266338   2.279117  -2.311   0.0208 *
-## nicotine_dependence_bin  0.560691   0.711826   0.788   0.4309  
-## Ca                       0.224939   0.321337   0.700   0.4839  
-## iPTH                     0.002351   0.002444   0.962   0.3360  
+##                      Estimate Std. Error z value Pr(&gt;|z|)  
+## (Intercept)         -0.607669   4.849768  -0.125   0.9003  
+## age                  0.002854   0.017963   0.159   0.8738  
+## sex                 -0.098344   0.737348  -0.133   0.8939  
+## groupK               1.489883   0.594803   2.505   0.0123 *
+## TBS                 -3.916972   1.972059  -1.986   0.0470 *
+## BMI                 -0.002614   0.043428  -0.060   0.9520  
+## nicotine_dependence  0.160733   0.660700   0.243   0.8078  
+## Ca                   0.268611   0.282737   0.950   0.3421  
+## iPTH                 0.001252   0.002155   0.581   0.5614  
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
 ## (Dispersion parameter for binomial family taken to be 1)
 ## 
-##     Null deviance: 127.87  on 189  degrees of freedom
-## Residual deviance: 110.34  on 182  degrees of freedom
-##   (47 obserwacji zostało skasowanych z uwagi na braki w nich zawarte)
-## AIC: 126.34
+##     Null deviance: 159.05  on 233  degrees of freedom
+## Residual deviance: 145.00  on 225  degrees of freedom
+##   (3 obserwacje zostały skasowane z uwagi na braki w nich zawarte)
+## AIC: 163
 ## 
-## Number of Fisher Scoring iterations: 6</code></pre>
+## Number of Fisher Scoring iterations: 5</code></pre>
 <pre class="r"><code>exp(coef(model6))</code></pre>
-<pre><code>##             (Intercept)                     age                 sex_bin 
-##             2.416452521             1.013307155             0.663147577 
-##                  groupK                     TBS nicotine_dependence_bin 
-##             5.322312412             0.005162482             1.751882532 
-##                      Ca                    iPTH 
-##             1.252245709             1.002354087</code></pre>
+<pre><code>##         (Intercept)                 age                 sex              groupK 
+##          0.54461908          1.00285768          0.90633666          4.43657601 
+##                 TBS                 BMI nicotine_dependence                  Ca 
+##          0.01990127          0.99738934          1.17437165          1.30814627 
+##                iPTH 
+##          1.00125235</code></pre>
 <pre class="r"><code>exp(confint(model6))</code></pre>
-<pre><code>##                                2.5 %       97.5 %
-## (Intercept)             7.121787e-05 1.405701e+05
-## age                     9.674127e-01 1.063515e+00
-## sex_bin                 1.458227e-01 4.423678e+00
-## groupK                  1.355879e+00 2.119435e+01
-## TBS                     5.071728e-05 4.229736e-01
-## nicotine_dependence_bin 3.793317e-01 6.548642e+00
-## Ca                      6.493460e-01 2.330389e+00
-## iPTH                    9.974803e-01 1.007594e+00</code></pre>
+<pre><code>##                            2.5 %       97.5 %
+## (Intercept)         4.148378e-05 8475.9261977
+## age                 9.685442e-01    1.0398043
+## sex                 2.415486e-01    4.7143822
+## groupK              1.370690e+00   14.4787663
+## TBS                 3.759627e-04    0.8989924
+## BMI                 9.119117e-01    1.0825837
+## nicotine_dependence 2.812956e-01    3.9406530
+## Ca                  7.393014e-01    2.2671409
+## iPTH                9.968197e-01    1.0055450</code></pre>
 <pre class="r"><code>BIC(model0, model1, model2, model3, model4, model5, model6)</code></pre>
 <pre><code>##        df      BIC
 ## model0  1 165.1922
@@ -777,58 +918,60 @@ summary(model6)</code></pre>
 ## model2  3 174.0596
 ## model3  4 177.7725
 ## model4  4 177.0639
-## model5  5 140.9663
-## model6  8 152.3129</code></pre>
+## model5  5 176.1570
+## model6  9 194.0999</code></pre>
 </div>
 <div id="model-7" class="section level2">
 <h2>Model 7</h2>
-<pre class="r"><code>model7 &lt;-  glm(fracture_bin ~ age + sex_bin + group + TBS + nicotine_dependence_bin + Ca + iPTH + BMD_neck, data = PHPT, family = binomial)
+<pre class="r"><code>model7 &lt;-  glm(fracture ~ age + sex + group + TBS + BMI + nicotine_dependence + Ca + iPTH + BMD_neck, data = PHPT_ml, family = binomial)
 summary(model7)</code></pre>
 <pre><code>## 
 ## Call:
-## glm(formula = fracture_bin ~ age + sex_bin + group + TBS + nicotine_dependence_bin + 
-##     Ca + iPTH + BMD_neck, family = binomial, data = PHPT)
+## glm(formula = fracture ~ age + sex + group + TBS + BMI + nicotine_dependence + 
+##     Ca + iPTH + BMD_neck, family = binomial, data = PHPT_ml)
 ## 
 ## Coefficients:
-##                          Estimate Std. Error z value Pr(&gt;|z|)   
-## (Intercept)              0.597169   6.109111   0.098  0.92213   
-## age                      0.012381   0.025210   0.491  0.62334   
-## sex_bin                 -0.556311   0.870619  -0.639  0.52283   
-## groupK                   1.831189   0.710134   2.579  0.00992 **
-## TBS                     -4.469344   2.352965  -1.899  0.05751 . 
-## nicotine_dependence_bin  0.584061   0.724152   0.807  0.41993   
-## Ca                       0.264942   0.329494   0.804  0.42135   
-## iPTH                     0.002266   0.002466   0.919  0.35820   
-## BMD_neck                -1.561927   2.530239  -0.617  0.53703   
+##                      Estimate Std. Error z value Pr(&gt;|z|)   
+## (Intercept)          1.258360   5.281609   0.238  0.81168   
+## age                 -0.008888   0.019400  -0.458  0.64684   
+## sex                 -0.549771   0.767555  -0.716  0.47383   
+## groupK               1.689088   0.616075   2.742  0.00611 **
+## TBS                 -2.813234   2.101040  -1.339  0.18058   
+## BMI                  0.035509   0.049578   0.716  0.47385   
+## nicotine_dependence  0.272921   0.681432   0.401  0.68878   
+## Ca                   0.261971   0.293300   0.893  0.37176   
+## iPTH                 0.001220   0.002119   0.576  0.56468   
+## BMD_neck            -4.667990   2.419770  -1.929  0.05372 . 
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
 ## (Dispersion parameter for binomial family taken to be 1)
 ## 
-##     Null deviance: 123.11  on 187  degrees of freedom
-## Residual deviance: 105.32  on 179  degrees of freedom
-##   (49 obserwacji zostało skasowanych z uwagi na braki w nich zawarte)
-## AIC: 123.32
+##     Null deviance: 154.10  on 230  degrees of freedom
+## Residual deviance: 136.33  on 221  degrees of freedom
+##   (6 obserwacji zostało skasowanych z uwagi na braki w nich zawarte)
+## AIC: 156.33
 ## 
-## Number of Fisher Scoring iterations: 6</code></pre>
+## Number of Fisher Scoring iterations: 5</code></pre>
 <pre class="r"><code>exp(coef(model7))</code></pre>
-<pre><code>##             (Intercept)                     age                 sex_bin 
-##              1.81696794              1.01245814              0.57332017 
-##                  groupK                     TBS nicotine_dependence_bin 
-##              6.24130480              0.01145482              1.79330603 
-##                      Ca                    iPTH                BMD_neck 
-##              1.30335493              1.00226826              0.20973159</code></pre>
+<pre><code>##         (Intercept)                 age                 sex              groupK 
+##         3.519645495         0.991151046         0.577082196         5.414538505 
+##                 TBS                 BMI nicotine_dependence                  Ca 
+##         0.060010620         1.036146922         1.313796947         1.299488594 
+##                iPTH            BMD_neck 
+##         1.001221184         0.009391123</code></pre>
 <pre class="r"><code>exp(confint(model7))</code></pre>
-<pre><code>##                                2.5 %       97.5 %
-## (Intercept)             1.270169e-05 4.181664e+05
-## age                     9.642252e-01 1.065344e+00
-## sex_bin                 1.173937e-01 4.014852e+00
-## groupK                  1.546665e+00 2.609173e+01
-## TBS                     1.014728e-04 1.148181e+00
-## nicotine_dependence_bin 3.783428e-01 6.862998e+00
-## Ca                      6.650324e-01 2.467170e+00
-## iPTH                    9.973599e-01 1.007558e+00
-## BMD_neck                1.306435e-03 2.778258e+01</code></pre>
+<pre><code>##                            2.5 %       97.5 %
+## (Intercept)         1.187060e-04 1.350500e+05
+## age                 9.544669e-01 1.030544e+00
+## sex                 1.416199e-01 3.131398e+00
+## groupK              1.619315e+00 1.862329e+01
+## TBS                 9.219037e-04 3.702396e+00
+## BMI                 9.366737e-01 1.139532e+00
+## nicotine_dependence 3.028319e-01 4.607391e+00
+## Ca                  7.206697e-01 2.303335e+00
+## iPTH                9.968556e-01 1.005478e+00
+## BMD_neck            7.207417e-05 1.002062e+00</code></pre>
 <pre class="r"><code>BIC(model0, model1, model2, model3, model4, model5, model6, model7)</code></pre>
 <pre><code>##        df      BIC
 ## model0  1 165.1922
@@ -836,127 +979,191 @@ summary(model7)</code></pre>
 ## model2  3 174.0596
 ## model3  4 177.7725
 ## model4  4 177.0639
-## model5  5 140.9663
-## model6  8 152.3129
-## model7  9 152.4520</code></pre>
+## model5  5 176.1570
+## model6  9 194.0999
+## model7 10 190.7530</code></pre>
 </div>
 <div id="model-8" class="section level2">
 <h2>Model 8</h2>
-<pre class="r"><code>model8 &lt;- glm(fracture_bin ~ age + sex_bin + TBS + nicotine_dependence_bin + Ca + iPTH + Tscore_femur_neck + Tscore_femur_total + Tscore_lumbar, data = PHPT, family = binomial)
+<pre class="r"><code>model8 &lt;- glm(fracture ~ age + sex + TBS + nicotine_dependence + BMI + Ca + iPTH + Tscore_femur_neck + Tscore_femur_total + Tscore_lumbar, data = PHPT_ml, family = binomial)
 summary(model8)</code></pre>
 <pre><code>## 
 ## Call:
-## glm(formula = fracture_bin ~ age + sex_bin + TBS + nicotine_dependence_bin + 
-##     Ca + iPTH + Tscore_femur_neck + Tscore_femur_total + Tscore_lumbar, 
-##     family = binomial, data = PHPT)
+## glm(formula = fracture ~ age + sex + TBS + nicotine_dependence + 
+##     BMI + Ca + iPTH + Tscore_femur_neck + Tscore_femur_total + 
+##     Tscore_lumbar, family = binomial, data = PHPT_ml)
 ## 
 ## Coefficients:
-##                          Estimate Std. Error z value Pr(&gt;|z|)
-## (Intercept)              0.939915   7.042595   0.133    0.894
-## age                      0.030004   0.046526   0.645    0.519
-## sex_bin                 -0.120629   1.210159  -0.100    0.921
-## TBS                     -2.461390   3.105721  -0.793    0.428
-## nicotine_dependence_bin  0.540059   1.286476   0.420    0.675
-## Ca                      -0.117476   0.434670  -0.270    0.787
-## iPTH                    -0.002069   0.005590  -0.370    0.711
-## Tscore_femur_neck        0.082199   0.667546   0.123    0.902
-## Tscore_femur_total      -0.193212   0.957933  -0.202    0.840
-## Tscore_lumbar           -0.087080   0.452676  -0.192    0.847
+##                       Estimate Std. Error z value Pr(&gt;|z|)
+## (Intercept)         -2.380e+00  7.096e+00  -0.335    0.737
+## age                  6.113e-05  3.579e-02   0.002    0.999
+## sex                 -1.182e+00  9.331e-01  -1.267    0.205
+## TBS                  1.324e-01  3.199e+00   0.041    0.967
+## nicotine_dependence  3.738e-01  9.114e-01   0.410    0.682
+## BMI                  6.292e-02  7.359e-02   0.855    0.392
+## Ca                  -9.230e-02  3.518e-01  -0.262    0.793
+## iPTH                 1.704e-03  2.686e-03   0.634    0.526
+## Tscore_femur_neck   -1.719e-01  5.174e-01  -0.332    0.740
+## Tscore_femur_total  -1.095e-01  5.957e-01  -0.184    0.854
+## Tscore_lumbar       -1.614e-01  3.291e-01  -0.490    0.624
 ## 
 ## (Dispersion parameter for binomial family taken to be 1)
 ## 
-##     Null deviance: 56.76  on 58  degrees of freedom
-## Residual deviance: 53.65  on 49  degrees of freedom
-##   (178 obserwacji zostało skasowanych z uwagi na braki w nich zawarte)
-## AIC: 73.65
+##     Null deviance: 80.363  on 87  degrees of freedom
+## Residual deviance: 74.084  on 77  degrees of freedom
+##   (149 obserwacji zostało skasowanych z uwagi na braki w nich zawarte)
+## AIC: 96.084
 ## 
-## Number of Fisher Scoring iterations: 5</code></pre>
+## Number of Fisher Scoring iterations: 4</code></pre>
 <pre class="r"><code>exp(coef(model8))</code></pre>
-<pre><code>##             (Intercept)                     age                 sex_bin 
-##              2.55976424              1.03045877              0.88636244 
-##                     TBS nicotine_dependence_bin                      Ca 
-##              0.08531629              1.71610793              0.88916157 
-##                    iPTH       Tscore_femur_neck      Tscore_femur_total 
-##              0.99793358              1.08567204              0.82430735 
-##           Tscore_lumbar 
-##              0.91660396</code></pre>
+<pre><code>##         (Intercept)                 age                 sex                 TBS 
+##          0.09254545          1.00006113          0.30670527          1.14157666 
+## nicotine_dependence                 BMI                  Ca                iPTH 
+##          1.45330109          1.06494668          0.91183268          1.00170525 
+##   Tscore_femur_neck  Tscore_femur_total       Tscore_lumbar 
+##          0.84202803          0.89631068          0.85094406</code></pre>
 <pre class="r"><code>exp(confint(model8))</code></pre>
-<pre><code>##                                2.5 %       97.5 %
-## (Intercept)             3.241270e-06 7.229964e+06
-## age                     9.412121e-01 1.134952e+00
-## sex_bin                 1.031194e-01 1.911859e+01
-## TBS                     1.662037e-04 4.528491e+01
-## nicotine_dependence_bin 1.200816e-01 2.197115e+01
-## Ca                      3.659971e-01 2.127893e+00
-## iPTH                    9.850970e-01 1.008264e+00
-## Tscore_femur_neck       2.633294e-01 3.832760e+00
-## Tscore_femur_total      1.239264e-01 5.768541e+00
-## Tscore_lumbar           3.707916e-01 2.271095e+00</code></pre>
+<pre><code>##                            2.5 %       97.5 %
+## (Intercept)         7.731691e-08 1.493979e+05
+## age                 9.289321e-01 1.071767e+00
+## sex                 5.024061e-02 2.219900e+00
+## TBS                 2.124723e-03 6.998914e+02
+## nicotine_dependence 2.149371e-01 8.352190e+00
+## BMI                 9.176011e-01 1.234015e+00
+## Ca                  4.397824e-01 1.779720e+00
+## iPTH                9.964248e-01 1.007315e+00
+## Tscore_femur_neck   2.853688e-01 2.253631e+00
+## Tscore_femur_total  2.839305e-01 3.041935e+00
+## Tscore_lumbar       4.421422e-01 1.634087e+00</code></pre>
 <pre class="r"><code>BIC(model0, model1, model2, model3, model4, model5, model6, model7, model8)</code></pre>
-<pre><code>##        df       BIC
-## model0  1 165.19220
-## model1  2 169.03117
-## model2  3 174.05955
-## model3  4 177.77248
-## model4  4 177.06393
-## model5  5 140.96631
-## model6  8 152.31285
-## model7  9 152.45205
-## model8 10  94.42544</code></pre>
+<pre><code>##        df      BIC
+## model0  1 165.1922
+## model1  2 169.0312
+## model2  3 174.0596
+## model3  4 177.7725
+## model4  4 177.0639
+## model5  5 176.1570
+## model6  9 194.0999
+## model7 10 190.7530
+## model8 11 123.3345</code></pre>
 </div>
 <div id="model-9" class="section level2">
 <h2>Model 9</h2>
-<pre class="r"><code>model9 &lt;- glm(fracture_bin ~ age + sex_bin + TBS + Tscore_femur_neck + Tscore_femur_total + Tscore_lumbar, data = PHPT, family = binomial)
+<pre class="r"><code>model9 &lt;- glm(fracture ~ age + sex + TBS + Tscore_femur_neck + Tscore_femur_total + Tscore_lumbar, data = PHPT_ml, family = binomial)
 summary(model9)</code></pre>
 <pre><code>## 
 ## Call:
-## glm(formula = fracture_bin ~ age + sex_bin + TBS + Tscore_femur_neck + 
-##     Tscore_femur_total + Tscore_lumbar, family = binomial, data = PHPT)
+## glm(formula = fracture ~ age + sex + TBS + Tscore_femur_neck + 
+##     Tscore_femur_total + Tscore_lumbar, family = binomial, data = PHPT_ml)
 ## 
 ## Coefficients:
-##                    Estimate Std. Error z value Pr(&gt;|z|)
-## (Intercept)         0.44971    5.52502   0.081    0.935
-## age                 0.01703    0.04139   0.412    0.681
-## sex_bin            -0.22898    1.19411  -0.192    0.848
-## TBS                -2.43977    3.05211  -0.799    0.424
-## Tscore_femur_neck   0.19154    0.64829   0.295    0.768
-## Tscore_femur_total -0.43484    0.78490  -0.554    0.580
-## Tscore_lumbar       0.02613    0.41387   0.063    0.950
+##                     Estimate Std. Error z value Pr(&gt;|z|)  
+## (Intercept)         0.695422   5.041506   0.138   0.8903  
+## age                 0.003061   0.034017   0.090   0.9283  
+## sex                -1.441185   0.841176  -1.713   0.0867 .
+## TBS                -1.433282   2.842670  -0.504   0.6141  
+## Tscore_femur_neck  -0.180566   0.533560  -0.338   0.7350  
+## Tscore_femur_total -0.092856   0.516181  -0.180   0.8572  
+## Tscore_lumbar      -0.053260   0.302948  -0.176   0.8604  
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
 ## (Dispersion parameter for binomial family taken to be 1)
 ## 
-##     Null deviance: 57.169  on 59  degrees of freedom
-## Residual deviance: 54.701  on 53  degrees of freedom
-##   (177 obserwacji zostało skasowanych z uwagi na braki w nich zawarte)
-## AIC: 68.701
+##     Null deviance: 81.101  on 89  degrees of freedom
+## Residual deviance: 75.799  on 83  degrees of freedom
+##   (147 obserwacji zostało skasowanych z uwagi na braki w nich zawarte)
+## AIC: 89.799
 ## 
-## Number of Fisher Scoring iterations: 4</code></pre>
+## Number of Fisher Scoring iterations: 5</code></pre>
 <pre class="r"><code>exp(coef(model9))</code></pre>
-<pre><code>##        (Intercept)                age            sex_bin                TBS 
-##         1.56784991         1.01718035         0.79534418         0.08718128 
+<pre><code>##        (Intercept)                age                sex                TBS 
+##          2.0045553          1.0030660          0.2366473          0.2385247 
 ##  Tscore_femur_neck Tscore_femur_total      Tscore_lumbar 
-##         1.21111902         0.64736640         1.02647604</code></pre>
+##          0.8347976          0.9113247          0.9481336</code></pre>
 <pre class="r"><code>exp(confint(model9))</code></pre>
 <pre><code>##                           2.5 %       97.5 %
-## (Intercept)        2.651666e-05 1.080448e+05
-## age                9.363918e-01 1.105835e+00
-## sex_bin            9.605567e-02 1.682959e+01
-## TBS                2.014194e-04 4.259423e+01
-## Tscore_femur_neck  3.053060e-01 4.133027e+00
-## Tscore_femur_total 1.343335e-01 3.108484e+00
-## Tscore_lumbar      4.524735e-01 2.371836e+00</code></pre>
+## (Intercept)        8.602825e-05 43413.696850
+## age                9.362270e-01     1.072033
+## sex                4.477806e-02     1.360434
+## TBS                9.030075e-04    73.393645
+## Tscore_femur_neck  2.770638e-01     2.277657
+## Tscore_femur_total 3.309682e-01     2.552788
+## Tscore_lumbar      5.193780e-01     1.736168</code></pre>
 <pre class="r"><code>BIC(model0, model1, model2, model3, model4, model5, model6, model7, model8, model9)</code></pre>
-<pre><code>##        df       BIC
-## model0  1 165.19220
-## model1  2 169.03117
-## model2  3 174.05955
-## model3  4 177.77248
-## model4  4 177.06393
-## model5  5 140.96631
-## model6  8 152.31285
-## model7  9 152.45205
-## model8 10  94.42544
-## model9  7  83.36130</code></pre>
+<pre><code>##        df      BIC
+## model0  1 165.1922
+## model1  2 169.0312
+## model2  3 174.0596
+## model3  4 177.7725
+## model4  4 177.0639
+## model5  5 176.1570
+## model6  9 194.0999
+## model7 10 190.7530
+## model8 11 123.3345
+## model9  7 107.2973</code></pre>
+<pre class="r"><code>model10 &lt;- glm(fracture ~ age + sex + BMI + nicotine_dependence + TBS + Tscore_femur_neck + Tscore_femur_total + Tscore_lumbar, data = PHPT_ml, family = binomial)
+summary(model10)</code></pre>
+<pre><code>## 
+## Call:
+## glm(formula = fracture ~ age + sex + BMI + nicotine_dependence + 
+##     TBS + Tscore_femur_neck + Tscore_femur_total + Tscore_lumbar, 
+##     family = binomial, data = PHPT_ml)
+## 
+## Coefficients:
+##                      Estimate Std. Error z value Pr(&gt;|z|)  
+## (Intercept)         -2.408480   6.265389  -0.384   0.7007  
+## age                  0.002365   0.035373   0.067   0.9467  
+## sex                 -1.439823   0.848662  -1.697   0.0898 .
+## BMI                  0.059537   0.073958   0.805   0.4208  
+## nicotine_dependence  0.254967   0.841347   0.303   0.7619  
+## TBS                 -0.352028   3.141716  -0.112   0.9108  
+## Tscore_femur_neck   -0.206100   0.516457  -0.399   0.6898  
+## Tscore_femur_total  -0.168650   0.552471  -0.305   0.7602  
+## Tscore_lumbar       -0.085926   0.306421  -0.280   0.7792  
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 81.101  on 89  degrees of freedom
+## Residual deviance: 75.113  on 81  degrees of freedom
+##   (147 obserwacji zostało skasowanych z uwagi na braki w nich zawarte)
+## AIC: 93.113
+## 
+## Number of Fisher Scoring iterations: 5</code></pre>
+<pre class="r"><code>exp(coef(model10))</code></pre>
+<pre><code>##         (Intercept)                 age                 sex                 BMI 
+##          0.08995194          1.00236824          0.23696969          1.06134513 
+## nicotine_dependence                 TBS   Tscore_femur_neck  Tscore_femur_total 
+##          1.29041953          0.70326069          0.81375207          0.84480440 
+##       Tscore_lumbar 
+##          0.91766242</code></pre>
+<pre class="r"><code>exp(confint(model10))</code></pre>
+<pre><code>##                            2.5 %       97.5 %
+## (Intercept)         3.332607e-07 22097.503982
+## age                 9.324121e-01     1.073708
+## sex                 4.414227e-02     1.379871
+## BMI                 9.146261e-01     1.230774
+## nicotine_dependence 2.158288e-01     6.366618
+## TBS                 1.521934e-03   394.048021
+## Tscore_femur_neck   2.759984e-01     2.162503
+## Tscore_femur_total  2.894011e-01     2.604656
+## Tscore_lumbar       4.999097e-01     1.695014</code></pre>
+<pre class="r"><code>BIC(model0, model1, model2, model3, model4, model5, model6, model7, model8, model9, model10)</code></pre>
+<pre><code>##         df      BIC
+## model0   1 165.1922
+## model1   2 169.0312
+## model2   3 174.0596
+## model3   4 177.7725
+## model4   4 177.0639
+## model5   5 176.1570
+## model6   9 194.0999
+## model7  10 190.7530
+## model8  11 123.3345
+## model9   7 107.2973
+## model10  9 115.6110</code></pre>
+</div>
 </div>
 
 
