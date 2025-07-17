@@ -109,7 +109,7 @@ PHPT %>%
   count(nicotine_dependence)
 ```
 
-# kamica nerkowa (nephrolithiasis) - wystpepowanie nie rozni sie istotnie w grupie kontrolnej i badanej:
+# kamica nerkowa (nephrolithiasis) - występowanie kamicy nie rozni sie istotnie w grupie PHPT i kontrolnej:
 ```{r}
 mosaicplot(~ group + nephrolithiasis, data = PHPT, color = TRUE)
 fisher.test(table(PHPT$group, PHPT$nephrolithiasis))
@@ -121,7 +121,7 @@ PHPT %>%
   count(nephrolithiasis)
 ```
 
-# objawy ze strony układu nerwowo-miesniowego (neuromuscular_symptoms) - nie roznia sie istotnie w grupie kontrolnej i badanej:
+# objawy ze strony układu nerwowo-miesniowego (neuromuscular_symptoms) - nie roznia sie istotnie w grupie PHPT i kontrolnej:
 ```{r}
 mosaicplot(~ group + neuromuscular_symptoms, data = PHPT, color = TRUE)
 fisher.test(table(PHPT$group, PHPT$neuromuscular_symptoms))

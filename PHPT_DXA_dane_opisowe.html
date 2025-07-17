@@ -441,7 +441,7 @@ display: none;
 <h4 class="author">Ewa Zalewska, Lukasz Cieszynski, Monika Berendt -
 Obolonczyk, Julia Tarnowska, Bartosz Brzezinski, Renata
 Swiatkowska-Stodulska</h4>
-<h4 class="date">17 lip 2025, godz. 15:44</h4>
+<h4 class="date">17 lip 2025, godz. 15:46</h4>
 
 </div>
 
@@ -610,8 +610,8 @@ Swiatkowska-Stodulska</h4>
 ## data:  .x[[i]]
 ## W = 0.99348, p-value = 0.4276</code></pre>
 </div>
-<div id="sprawdzenie-rozkladu-w-obu-grupie-phpt" class="section level1">
-<h1>sprawdzenie rozkladu w obu grupie PHPT:</h1>
+<div id="sprawdzenie-rozkladu-w-grupie-phpt" class="section level1">
+<h1>sprawdzenie rozkladu w grupie PHPT:</h1>
 <pre class="r"><code>PHPT %&gt;%
   filter(group == &quot;B&quot;) %&gt;%
   select(age, weight, Ca, Pi, iPTH, nOHD, aOHD, Cr, albumin, BMD_neck, HF_risk, MOF_risk, Tscore_femur_neck, Tscore_femur_total, Tscore_lumbar, Tscore_radial, zscore_femur_neck, zscore_femur_total, zscore_lumbar, zscore_radial) %&gt;%
@@ -775,8 +775,8 @@ Swiatkowska-Stodulska</h4>
 ## data:  .x[[i]]
 ## W = 0.99337, p-value = 0.5761</code></pre>
 </div>
-<div id="sprawdzenie-rozkladu-w-obu-grupie-kontrolnej" class="section level1">
-<h1>sprawdzenie rozkladu w obu grupie kontrolnej:</h1>
+<div id="sprawdzenie-rozkladu-w-grupie-kontrolnej" class="section level1">
+<h1>sprawdzenie rozkladu w grupie kontrolnej:</h1>
 <pre class="r"><code>PHPT %&gt;%
   filter(group == &quot;K&quot;) %&gt;%
   select(nOHD, BMD_neck, Tscore_femur_neck, Tscore_femur_total, Tscore_lumbar, Tscore_radial, zscore_femur_neck, zscore_femur_total, zscore_lumbar, zscore_radial) %&gt;%
