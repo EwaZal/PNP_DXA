@@ -25,7 +25,7 @@ library(modelr)
 library(broom)
 ```
 
-```{r setup, include=TRUE}
+```{r setup, include=FALSE}
 PNP <- read_delim("PNP_densytometria_10_04_25.csv", delim = ";", 
                   escape_double = FALSE,locale = locale(decimal_mark = "."), trim_ws = TRUE)
 
