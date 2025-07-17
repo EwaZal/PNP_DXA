@@ -70,7 +70,7 @@ PHPT <- PHPT %>%
 
 PHPT <- PHPT %>%
   mutate(TBS_split = case_when (TBS > 1.2 ~ "high",
-                                age < 1.2 ~ "low"))
+                                TBS < 1.2 ~ "low"))
 
 
 # Zapisz lokalnie zbiór danych przeznaczony do analizy danych dotyczących PHPT
