@@ -25,7 +25,7 @@ library(modelr)
 library(broom)
 ```
 
-```{r setup, include=FALSE}
+```{r}
 PHPT <- read_delim("PNP_densytometria_10_04_25.csv", delim = ";", 
                   escape_double = FALSE,locale = locale(decimal_mark = "."), trim_ws = TRUE)
 
@@ -62,7 +62,8 @@ PHPT <- PHPT %>%
          log_Ca = log(Ca),
          log_BMD = log(BMD_neck),
          log_MOF = log(MOF_risk),
-         log_HF = log(HF_risk))
+         log_HF = log(HF_risk),
+         log_TBS = log(TBS))
 
 PHPT <- PHPT %>%
   mutate(age_split = case_when (age > 50 ~ "postM",

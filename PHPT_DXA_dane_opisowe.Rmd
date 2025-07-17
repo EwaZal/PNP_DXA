@@ -29,6 +29,8 @@ if (file.exists(plik_dane_do_analizy)) {
   stop(sprintf("Nie znaleziono pliku: `%s`. Uruchom notatnik przygotowujący zbiór danych!", plik_dane_do_analizy))
 }
 
+PHPT_B <- PHPT %>%
+  filter(group == 'B')
 
 # Set global theme
 theme_set(theme_classic2(base_size = 13))
@@ -529,24 +531,50 @@ ggplot(data = subset(PHPT, TBS != "NA"), aes(x = group, y = TBS, fill = group)) 
 ```
 
 # NOWE DO DOPISANIA: wykres porownujacy TBS w grupie badanej i kontrolnej pomiedzy osobami bez i ze złamaniami -  w grupie osób ze złamaniami w wywiadzie stwierdzono istotnie niższe TBS w grupie PHPT:
-```{r}
+```{r, warning = FALSE, message = FALSE}
 ggplot(PHPT, aes(x = fracture, y = TBS, fill = fracture)) +
   geom_boxplot(alpha = 0.5) +
   scale_fill_manual(values = c("gray89", "gray27")) +
-  scale_x_discrete(labels= c("without fracture", "with fracture")) +
+  scale_x_discrete(labels = c("Y" = "with fracture", "N" = "Participants without fracture")) +
   labs(x = NULL, y = "Trabecular bone score") +
   stat_compare_means(method = 'wilcox.test', label = "p.format", size = 4) +
   theme_bw() +
   facet_wrap(vars(group), labeller = labeller(group = c('B' = 'PHPT group', 'K' = 'control group'))) +
   theme(legend.position = "none") +
   theme(text = element_text(size = 16))
+
+```
+
+```{r save-plot, echo=FALSE, warning = FALSE, message = FALSE}
+p <- ggplot(PHPT, aes(x = fracture, y = TBS, fill = fracture)) +
+  geom_boxplot(alpha = 0.5) +
+  scale_fill_manual(values = c("gray89", "gray27")) +
+  scale_x_discrete(labels = c("Y" = "with fracture", "N" = "Participants without fracture")) +
+  labs(x = NULL, y = "Trabecular bone score") +
+  stat_compare_means(method = 'wilcox.test', label = "p.format", size = 4) +
+  theme_bw() +
+  facet_wrap(vars(group), labeller = labeller(group = c('B' = 'PHPT group', 'K' = 'control group'))) +
+  theme(legend.position = "none") +
+  theme(text = element_text(size = 16))
+
+
+# Zapis jako plik JPG
+ggsave("wykres.jpg", plot = p, width = 9, height = 4, dpi = 300)
+
+
+```
+
+# TBS w grupie osób bez i z fracture
+```{r}
+PHPT_B %>%
+  group_by(fracture) %>%
+  get_summary_stats(TBS)
+
+
 ```
 
 # NOWE I CIKAWE DO OPISANIA: czy jest zwiazek miedzy zlamaniami w wywiadzie a TBS <1.2 i >1.2? - TAK, wychodzi, ze jest wiecej zlaman u osob z nizszym TBS niż z wyższym:
 ```{r}
-PHPT_B <- PHPT %>%
-  filter(group == 'B')
-
 mosaicplot(~ fracture + TBS_split, data = PHPT_B, color = TRUE)
 
 fisher.test(table(PHPT_B$fracture, PHPT_B$TBS_split))
@@ -657,7 +685,7 @@ ggplot(PHPT, aes(TBS, Ca)) +
   stat_cor(method = "spearman")
 ```
 
-# Ca concentration a TBS - w grupie badanej i kontrolnej jako całość
+# Ca concentration a TBS - w grupie badanej i kontrolnej osobno:
 ```{r}
 ggplot(PHPT, aes(Ca, TBS)) +
   geom_point() +
@@ -666,6 +694,34 @@ ggplot(PHPT, aes(Ca, TBS)) +
   facet_wrap(vars(group), labeller = labeller(group = c('B' = 'study group', 'K' = 'control group'))) +
   labs(x = "Trabecular bone score", y ="Ca [mg/dL]") +
   stat_cor(method = "spearman")
+```
+# Ca concentration a TBS - w grupie badanej:
+```{r}
+ggplot(PHPT_B, aes(Ca, TBS)) +
+  geom_point() +
+  geom_smooth(method = "lm") +
+  theme_light() +
+  labs(x = "Trabecular bone score", y ="Ca [mg/dL]") +
+  stat_cor(method = "spearman")
+```
+# Ca concentration a TBS - w grupie badanej:
+```{r}
+ggplot(PHPT, aes(log_Ca, log_TBS)) +
+  geom_point() +
+  geom_smooth(method = "lm") +
+  theme_light() +
+  labs(x = "Logarithm of Trabecular bone score", y ="Logarithm of Ca [mg/dL]") +
+  stat_cor(method = "spearman")
+```
+```{r save-plot, echo=FALSE, message=FALSE, warning=FALSE}
+k <- ggplot(PHPT, aes(log_Ca, log_TBS)) +
+  geom_point() +
+  geom_smooth(method = "lm") +
+  theme_light() +
+  labs(x = "Logarithm of trabecular bone score", y ="Logarithm of calcium [mg/dL]") +
+  stat_cor(method = "spearman")
+
+ggsave("korelacaj_TBS_i_Ca_v2.jpg", plot = k, width = 9, height = 4, dpi = 300)
 ```
 
 # Ca a TBS z podzialem na grupe badana i kontrolna i ze wzgledu na plec
