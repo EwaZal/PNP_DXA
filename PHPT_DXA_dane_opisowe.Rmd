@@ -542,7 +542,7 @@ ggplot(PHPT, aes(x = fracture, y = TBS, fill = fracture)) +
   theme(text = element_text(size = 16))
 ```
 
-# czy jest zwiazek miedzy zlamaniami w wywiadzie a TBS <1.2 i >1.2?
+# czy jest zwiazek miedzy zlamaniami w wywiadzie a TBS <1.2 i >1.2? - TAK, wychodzi, ze jest wiecej zlaman u osob z nizszym TBS niż z wyższym:
 ```{r}
 PHPT_B <- PHPT %>%
   filter(group == 'B')
