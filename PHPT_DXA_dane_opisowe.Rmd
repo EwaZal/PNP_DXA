@@ -55,19 +55,25 @@ PHPT %>%
 ```
 # Rozklad normalny maja zmienne: Tscore_femur_neck, Tscore_femur_total, Tscore_lumbar, Tscore_radial, zscore_femur_neck, zscore_femur_total, zscore_lumbar, zscore_radial
 
-# POROWNANIE GRUPY PC POD WZGLEDEM PROPORSJI PLCI
+
+
+# POROWNANIE GRUPY PHPT i KONTROLNEJ POD WZGLEDEM ILOSCI KOBIET I MEZCZYZN
 ```{r}
 mosaicplot(~ group + sex, data = PHPT, color = TRUE)
 fisher.test(table(PHPT$group, PHPT$sex))
 
 pairwise_fisher_test(table(PHPT$group, PHPT$sex), p.adjust.method = "fdr")
+```
+# proporcje kobiet do mezczyzn nie roznia sie istotnie w grupie kontrolnej i badanej
 
+# ilosc kobiet i mezczyzn w grupie PHPT i kontrolnej:
+```{r}
 PHPT %>%
   group_by(group) %>%
   count(sex)
 ```
 
-# wieku - dwie grupy i rozklad odbiega od normalnego:
+# wiek w grupie kontrolnej i grupie badanej - nie rozni sie istotnie w grupach:
 ```{r}
 wilcox.test(age ~ group, data = subset(PHPT, group != "NA"))
 
@@ -81,7 +87,7 @@ PHPT %>%
 # TukeyHSD(model)
 ```
 
-# BMI - grupy sa dobrane
+# BMI - grupy sa dobrane rozniez pod wzgledem BMI
 ```{r}
 wilcox.test(BMI ~ group, data = subset(PHPT, group != "NA"))
 
@@ -91,7 +97,7 @@ PHPT %>%
 
 ```
 
-# palacze:
+# palacze - ilos palaczy w grupie kontrolnej i badanej nie rozni sie istotnie:
 ```{r}
 mosaicplot(~ group + nicotine_dependence, data = PHPT, color = TRUE)
 fisher.test(table(PHPT$group, PHPT$nicotine_dependence))
@@ -103,7 +109,7 @@ PHPT %>%
   count(nicotine_dependence)
 ```
 
-# nephrolithiasis:
+# kamica nerkowa (nephrolithiasis) - wystpepowanie nie rozni sie istotnie w grupie kontrolnej i badanej:
 ```{r}
 mosaicplot(~ group + nephrolithiasis, data = PHPT, color = TRUE)
 fisher.test(table(PHPT$group, PHPT$nephrolithiasis))
@@ -115,7 +121,7 @@ PHPT %>%
   count(nephrolithiasis)
 ```
 
-# neuromuscular_symptoms:
+# objawy ze strony układu nerwowo-miesniowego (neuromuscular_symptoms) - nie roznia sie istotnie w grupie kontrolnej i badanej:
 ```{r}
 mosaicplot(~ group + neuromuscular_symptoms, data = PHPT, color = TRUE)
 fisher.test(table(PHPT$group, PHPT$neuromuscular_symptoms))
@@ -127,7 +133,7 @@ PHPT %>%
   count(neuromuscular_symptoms)
 ```
 
-# fracture
+# wystepowanie zamania (fracture) - nie roznilo sie istotnie statystycznie w grupie badanej i kontrolnej
 ```{r}
 mosaicplot(~ group + fracture, data = PHPT, color = TRUE)
 fisher.test(table(PHPT$group, PHPT$fracture))
@@ -140,7 +146,7 @@ PHPT %>%
 ```
 
 ############ BADANIA LABORATORYJNE #########################
-# Ca
+# Ca - istotnie wyzsze stezenie w grupie PHPT
 ```{r}
 wilcox.test(Ca ~ group, data = subset(PHPT, group != "NA"))
 
@@ -149,7 +155,7 @@ PHPT %>%
   get_summary_stats(Ca, type = "quantile")
 ```
 
-# Pi
+# Pi - istotnie nizsze w grupie PHPT
 ```{r}
 wilcox.test(Pi ~ group, data = subset(PHPT, group != "NA"))
 
@@ -158,7 +164,7 @@ PHPT %>%
   get_summary_stats(Pi, type = "quantile")
 ```
 
-# iPTH
+# iPTH - istotnie wyzsze w grupie PHPT
 ```{r}
 wilcox.test(iPTH ~ group, data = subset(PHPT, group != "NA"))
 
@@ -167,7 +173,7 @@ PHPT %>%
   get_summary_stats(iPTH, type = "quantile")
 ```
 
-# 25OHD
+# 25OHD - istotnie nizsze w grupie PHPT
 ```{r}
 wilcox.test(nOHD ~ group, data = subset(PHPT, group != "NA"))
 
@@ -176,7 +182,7 @@ PHPT %>%
   get_summary_stats(nOHD, type = "quantile")
 ```
 
-# 1,25OHD
+# 1,25OHD - istotnie wyzsze w grupie PHPT
 ```{r}
 t.test(aOHD ~ group, data = subset(PHPT, group != "NA"))
 
@@ -185,7 +191,7 @@ PHPT %>%
   get_summary_stats(aOHD, type = "quantile")
 ```
 
-# Cr
+# Cr - porownywalne w grupach
 ```{r}
 wilcox.test(Cr ~ group, data = subset(PHPT, group != "NA"))
 
@@ -194,7 +200,7 @@ PHPT %>%
   get_summary_stats(Cr, type = "quantile")
 ```
 
-# albumin
+# albumin - porownywanlne w grupach
 ```{r}
 wilcox.test(albumin ~ group, data = subset(PHPT, group != "NA"))
 
@@ -204,7 +210,7 @@ PHPT %>%
 ```
 
 ############################### DXA #############################################
-# MOF_risk
+# Ryzyko złamania głównego (MOF_risk) - porownywalne w grupach badanej i kontrolnej
 ```{r}
 wilcox.test(MOF_risk ~ group, data = subset(PHPT, group != "NA"))
 
@@ -238,7 +244,7 @@ ggplot(data = subset(PHPT, MOF_risk != "NA"), aes(x = group, y = MOF_risk, fill 
 ```
 
 ##############
-# HF_risk
+# Ryzyko złamania biodra (HF_risk) - porownywalne:
 ```{r}
 wilcox.test(HF_risk ~ group, data = subset(PHPT, group != "NA"))
 
@@ -246,7 +252,6 @@ PHPT %>%
   group_by(group) %>%
   get_summary_stats(HF_risk, type = "quantile")
 
-# WYBRANE DO PLAKATU:
 # wykres porownujacy HF_risk w grupie badanej i kontrolnej:
 ggplot(data = subset(PHPT, HF_risk != "NA"), aes(x = group, y = HF_risk, fill = group)) +
   geom_boxplot(alpha = 0.5) +

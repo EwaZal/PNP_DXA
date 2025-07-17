@@ -441,17 +441,13 @@ display: none;
 <h4 class="author">Ewa Zalewska, Lukasz Cieszynski, Monika Berendt -
 Obolonczyk, Julia Tarnowska, Bartosz Brzezinski, Renata
 Swiatkowska-Stodulska</h4>
-<h4 class="date">17 lip 2025, godz. 15:00</h4>
+<h4 class="date">17 lip 2025, godz. 15:05</h4>
 
 </div>
 
 
-<div id="sprawdzenie-rozkladu" class="section level1">
-<h1>sprawdzenie rozkladu:</h1>
-<div id="rozklad-normalny-maja-zmienne-tscore_femur_neck-tscore_femur_total-tscore_lumbar-tscore_radial-zscore_femur_neck-zscore_femur_total-zscore_lumbar-zscore_radial" class="section level2">
-<h2>Rozklad normalny maja zmienne: Tscore_femur_neck,
-Tscore_femur_total, Tscore_lumbar, Tscore_radial, zscore_femur_neck,
-zscore_femur_total, zscore_lumbar, zscore_radial</h2>
+<div id="sprawdzenie-rozkladu---w-obu-grupach-phpt-i-kontrolnej" class="section level1">
+<h1>sprawdzenie rozkladu - w obu grupach (PHPT i kontrolnej)</h1>
 <pre class="r"><code>PHPT %&gt;%
   select(age, weight, Ca, Pi, iPTH, nOHD, aOHD, Cr, albumin, BMD_neck, HF_risk, MOF_risk, Tscore_femur_neck, Tscore_femur_total, Tscore_lumbar, Tscore_radial, zscore_femur_neck, zscore_femur_total, zscore_lumbar, zscore_radial) %&gt;%
   map(shapiro.test)</code></pre>
@@ -613,6 +609,9 @@ zscore_femur_total, zscore_lumbar, zscore_radial</h2>
 ## 
 ## data:  .x[[i]]
 ## W = 0.99348, p-value = 0.4276</code></pre>
+</div>
+<div id="sprawdzenie-rozkladu-w-obu-grupie-phpt" class="section level1">
+<h1>sprawdzenie rozkladu w obu grupie PHPT:</h1>
 <pre class="r"><code>PHPT %&gt;%
   filter(group == &quot;B&quot;) %&gt;%
   select(age, weight, Ca, Pi, iPTH, nOHD, aOHD, Cr, albumin, BMD_neck, HF_risk, MOF_risk, Tscore_femur_neck, Tscore_femur_total, Tscore_lumbar, Tscore_radial, zscore_femur_neck, zscore_femur_total, zscore_lumbar, zscore_radial) %&gt;%
@@ -775,6 +774,9 @@ zscore_femur_total, zscore_lumbar, zscore_radial</h2>
 ## 
 ## data:  .x[[i]]
 ## W = 0.99337, p-value = 0.5761</code></pre>
+</div>
+<div id="sprawdzenie-rozkladu-w-obu-grupie-kontrolnej" class="section level1">
+<h1>sprawdzenie rozkladu w obu grupie kontrolnej:</h1>
 <pre class="r"><code>PHPT %&gt;%
   filter(group == &quot;K&quot;) %&gt;%
   select(nOHD, BMD_neck, Tscore_femur_neck, Tscore_femur_total, Tscore_lumbar, Tscore_radial, zscore_femur_neck, zscore_femur_total, zscore_lumbar, zscore_radial) %&gt;%
@@ -858,6 +860,10 @@ zscore_femur_total, zscore_lumbar, zscore_radial</h2>
 ## data:  .x[[i]]
 ## W = 0.97308, p-value = 0.4166</code></pre>
 </div>
+<div id="rozklad-normalny-maja-zmienne-tscore_femur_neck-tscore_femur_total-tscore_lumbar-tscore_radial-zscore_femur_neck-zscore_femur_total-zscore_lumbar-zscore_radial" class="section level1">
+<h1>Rozklad normalny maja zmienne: Tscore_femur_neck,
+Tscore_femur_total, Tscore_lumbar, Tscore_radial, zscore_femur_neck,
+zscore_femur_total, zscore_lumbar, zscore_radial</h1>
 </div>
 <div id="porownanie-grupy-pc-pod-wzgledem-proporsji-plci" class="section level1">
 <h1>POROWNANIE GRUPY PC POD WZGLEDEM PROPORSJI PLCI</h1>
