@@ -1,6 +1,6 @@
 ---
 title: "PHPT DXA"
-author: "Ewa Zalewska, Lukasz Cieszynski, Monika Berendt - Obolonczyk, Julia Tarnowska, Bartosz Brzezinski, Renata Swiatkowska-Stodulska"
+author: "Ewa Zalewska, Lukasz Cieszynski, Monika Berendt - Obolonczyk, Julia Tarnowska, Bartosz Zeglen, Renata Swiatkowska-Stodulska"
 date:  "`r format(Sys.time(), '%e %b %Y, godz. %H:%M')`"
 output:
   html_document:
