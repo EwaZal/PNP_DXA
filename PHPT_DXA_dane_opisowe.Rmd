@@ -360,7 +360,20 @@ ggplot(PHPT, aes(x = group, y = Tscore_lumbar, fill = group)) +
   theme(text = element_text(size = 16))
 ```
 
-# z podziałem ze względu na sex
+# wykres porownujacy Tscore_lumbar w grupie badanej i kontrolnej:
+```{r}
+ggplot(PHPT, aes(x = group, y = Tscore_lumbar, fill = group)) +
+  geom_boxplot(alpha = 0.5) +
+  scale_fill_manual(values = c("gray89", "gray27"))  +
+  scale_x_discrete(labels= c("study group", "control group")) +
+  labs(x = " ", y = "T-score lumbar site") +
+  stat_compare_means(method = 't.test', label = "p.format", size = 4) +
+  theme_bw() +
+  theme(legend.position = "none") +
+  theme(text = element_text(size = 16))
+```
+
+# T_score_lumbar z podziałem ze względu na sex
 ```{r}
 ggplot(PHPT, aes(x = group, y = Tscore_lumbar, fill = group)) +
   geom_boxplot(alpha = 0.5) +
@@ -374,6 +387,42 @@ ggplot(PHPT, aes(x = group, y = Tscore_lumbar, fill = group)) +
   theme(text = element_text(size = 12))
 ```
 
+# T_score _lumbar z podziałem ze względu na wiek
+```{r}
+ggplot(PHPT, aes(x = group, y = Tscore_lumbar, fill = group)) +
+  geom_boxplot(alpha = 0.5) +
+  scale_fill_manual(values = c("gray89", "gray27"))  +
+  scale_x_discrete(labels= c("study group", "control group")) +
+  labs(x = " ", y = "T-score lumbar site") +
+  stat_compare_means(method = 't.test', label = "p.format", size = 4) +
+  theme_bw() +
+  theme(legend.position = "none") +
+  facet_wrap(vars(age_split), labeller = labeller(age_split = c('older' = '> 50 y/o', 'younger' = '< 50 y/o'))) +
+  theme(text = element_text(size = 12))
+```
+# T_score _lumbar z podziałem ze względu na płeć i wiek
+```{r}
+ggplot(PHPT, aes(x = group, y = Tscore_lumbar, fill = group)) +
+  geom_boxplot(alpha = 0.5) +
+  scale_fill_manual(values = c("gray89", "gray27"))  +
+  scale_x_discrete(labels= c("study group", "control group")) +
+  labs(x = " ", y = "T-score lumbar site") +
+  stat_compare_means(method = 't.test', label = "p.format", size = 4) +
+  theme_bw() +
+  theme(legend.position = "none") +
+  facet_grid(sex ~ age_split, 
+             labeller = labeller(
+               sex = c('K' = 'female', 'M' = 'male'),
+               age_split = c('older' = '> 50 y/o', 'younger' = '< 50 y/o')
+             )) +
+  theme(text = element_text(size = 12))
+```
+
+
+
+
+
+
 ############
 # Tscore_femur_neck
 ```{r}
@@ -384,6 +433,24 @@ PHPT %>%
   get_summary_stats(Tscore_femur_neck, type = "common")
 ```
 
+# Tscore_femur_neck z podziałem ze względu na płeć i wiek
+```{r}
+ggplot(PHPT, aes(x = group, y = Tscore_femur_neck, fill = group)) +
+  geom_boxplot(alpha = 0.5) +
+  scale_fill_manual(values = c("gray89", "gray27"))  +
+  scale_x_discrete(labels= c("study group", "control group")) +
+  labs(x = " ", y = "T-score femur neck") +
+  stat_compare_means(method = 't.test', label = "p.format", size = 4) +
+  theme_bw() +
+  theme(legend.position = "none") +
+  facet_grid(sex ~ age_split, 
+             labeller = labeller(
+               sex = c('K' = 'female', 'M' = 'male'),
+               age_split = c('older' = '> 50 y/o', 'younger' = '< 50 y/o')
+             )) +
+  theme(text = element_text(size = 12))
+```
+
 # Tscore_radial
 ```{r}
 t.test(Tscore_radial ~ group, data = subset(PHPT, group != "NA"))
@@ -392,6 +459,7 @@ PHPT %>%
   group_by(group) %>%
   get_summary_stats(Tscore_radial, type = "common")
 ```
+
 
 # PORÓWNANIE T-score radial pomiedzy grupa badaną a kontrolną
 
@@ -422,6 +490,24 @@ ggplot(PHPT, aes(x = group, y = Tscore_radial, fill = group)) +
   theme(text = element_text(size = 12))
 ```
 
+# Tscore_radial w grupie PHPT i kontrolnej z podziałem ze względu na płeć i wiek
+```{r}
+ggplot(PHPT, aes(x = group, y = Tscore_radial, fill = group)) +
+  geom_boxplot(alpha = 0.5) +
+  scale_fill_manual(values = c("gray89", "gray27"))  +
+  scale_x_discrete(labels= c("study group", "control group")) +
+  labs(x = " ", y = "T-score radial") +
+  stat_compare_means(method = 't.test', label = "p.format", size = 4) +
+  theme_bw() +
+  theme(legend.position = "none") +
+  facet_grid(sex ~ age_split, 
+             labeller = labeller(
+               sex = c('K' = 'female', 'M' = 'male'),
+               age_split = c('older' = '> 50 y/o', 'younger' = '< 50 y/o')
+             )) +
+  theme(text = element_text(size = 12))
+```
+
 ###########################
 # zscore_lumbar
 ```{r}
@@ -431,6 +517,23 @@ PHPT %>%
   group_by(group) %>%
   get_summary_stats(zscore_lumbar, type = "common")
 ```
+```{r}
+ggplot(PHPT, aes(x = group, y = zscore_lumbar, fill = group)) +
+  geom_boxplot(alpha = 0.5) +
+  scale_fill_manual(values = c("gray89", "gray27"))  +
+  scale_x_discrete(labels= c("study group", "control group")) +
+  labs(x = " ", y = "Z-score lumbar") +
+  stat_compare_means(method = 't.test', label = "p.format", size = 4) +
+  theme_bw() +
+  theme(legend.position = "none") +
+  facet_grid(sex ~ age_split, 
+             labeller = labeller(
+               sex = c('K' = 'female', 'M' = 'male'),
+               age_split = c('older' = '> 50 y/o', 'younger' = '< 50 y/o')
+             )) +
+  theme(text = element_text(size = 12))
+```
+
 
 # zscore_femur_neck
 ```{r}
@@ -439,6 +542,22 @@ t.test(zscore_femur_neck ~ group, data = subset(PHPT, group != "NA"))
 PHPT %>%
   group_by(group) %>%
   get_summary_stats(zscore_femur_neck, type = "common")
+```
+```{r}
+ggplot(PHPT, aes(x = group, y = zscore_femur_neck, fill = group)) +
+  geom_boxplot(alpha = 0.5) +
+  scale_fill_manual(values = c("gray89", "gray27"))  +
+  scale_x_discrete(labels= c("study group", "control group")) +
+  labs(x = " ", y = "Z-score femur neck") +
+  stat_compare_means(method = 't.test', label = "p.format", size = 4) +
+  theme_bw() +
+  theme(legend.position = "none") +
+  facet_grid(sex ~ age_split, 
+             labeller = labeller(
+               sex = c('K' = 'female', 'M' = 'male'),
+               age_split = c('older' = '> 50 y/o', 'younger' = '< 50 y/o')
+             )) +
+  theme(text = element_text(size = 12))
 ```
 
 # zscore_radial
@@ -469,11 +588,44 @@ ggplot(PHPT, aes(x = group, y = zscore_radial, fill = group)) +
   geom_boxplot(alpha = 0.5) +
   scale_fill_manual(values = c("gray89", "gray27"))  +
   scale_x_discrete(labels= c("study group", "control group")) +
-  labs(x = " ", y = "zZ-score radial site") +
+  labs(x = " ", y = "Z-score radial site") +
   stat_compare_means(method = 't.test', label = "p.format", size = 4) +
   theme_bw() +
   theme(legend.position = "none") +
   facet_wrap(vars(sex), labeller = labeller(sex = c('K' = 'female', 'M' = 'male'))) +
+  theme(text = element_text(size = 12))
+```
+# PORÓWNANIE z-score radial pomiędzy grupą badaną a kontrolną z podziałem ze względu na wiek:
+```{r}
+ggplot(PHPT, aes(x = group, y = zscore_radial, fill = group)) +
+  geom_boxplot(alpha = 0.5) +
+  scale_fill_manual(values = c("gray89", "gray27"))  +
+  scale_x_discrete(labels= c("study group", "control group")) +
+  labs(x = " ", y = "Z-score radial site") +
+  stat_compare_means(method = 't.test', label = "p.format", size = 4) +
+  theme_bw() +
+  theme(legend.position = "none") +
+  facet_wrap(vars(age_split), labeller = labeller(age_split = c('older' = '> 50 y/o', 'younger' = '< 50 y/o'))) +
+  theme(text = element_text(size = 12))
+```
+
+
+# Porównanie z-score radial pomiędzy grupą badaną a kontrolną z podziałem ze względu na płeć i na wiek:
+```{r}
+ggplot(PHPT %>% filter(!is.na(zscore_radial)), 
+       aes(x = group, y = zscore_radial, fill = group)) +
+  geom_boxplot(alpha = 0.5) +
+  scale_fill_manual(values = c("gray89", "gray27"))  +
+  scale_x_discrete(labels= c("study group", "control group")) +
+  labs(x = " ", y = "Z-score radial site") +
+  stat_compare_means(method = 't.test', label = "p.format", size = 4) +
+  theme_bw() +
+  theme(legend.position = "none") +
+  facet_grid(sex ~ age_split, 
+             labeller = labeller(
+               sex = c('K' = 'female', 'M' = 'male'),
+               age_split = c('older' = '> 50 y/o', 'younger' = '< 50 y/o')
+             )) +
   theme(text = element_text(size = 12))
 ```
 
@@ -526,7 +678,7 @@ ggplot(data = subset(PHPT, TBS != "NA"), aes(x = group, y = TBS, fill = group)) 
   facet_grid(sex ~ age_split, 
              labeller = labeller(
                sex = c('K' = 'female', 'M' = 'male'),
-               age_split = c('preM' = 'premenopausal', 'postM' = 'postmenopausal')
+               age_split = c('older' = '> 50 y/o', 'younger' = '< 50 y/o')
              ))
 ```
 
