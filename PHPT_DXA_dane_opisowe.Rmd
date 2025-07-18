@@ -387,6 +387,22 @@ ggplot(PHPT, aes(x = group, y = Tscore_lumbar, fill = group)) +
   theme(text = element_text(size = 12))
 ```
 
+```{r include=FALSE}
+t <- ggplot(PHPT, aes(x = group, y = Tscore_lumbar, fill = group)) +
+  geom_boxplot(alpha = 0.5) +
+  scale_fill_manual(values = c("gray89", "gray27"))  +
+  scale_x_discrete(labels= c("study group", "control group")) +
+  labs(x = " ", y = "T-score lumbar site") +
+  stat_compare_means(method = 't.test', label = "p.format", size = 4) +
+  theme_bw() +
+  theme(legend.position = "none") +
+  facet_wrap(vars(sex), labeller = labeller(sex = c('K' = 'female', 'M' = 'male'))) +
+  theme(text = element_text(size = 12))
+
+ggsave("Tscorelumbarsex.jpg", plot = t, width = 7, height = 4, dpi = 300)
+```
+
+
 # T_score _lumbar z podziałem ze względu na wiek
 ```{r}
 ggplot(PHPT, aes(x = group, y = Tscore_lumbar, fill = group)) +
@@ -402,6 +418,25 @@ ggplot(PHPT, aes(x = group, y = Tscore_lumbar, fill = group)) +
 ```
 # T_score _lumbar z podziałem ze względu na płeć i wiek
 ```{r}
+PHPT %>%
+  filter(sex == "K", !is.na(group)) %>%
+  t.test(Tscore_lumbar ~ group, data = .)
+
+PHPT %>%
+  filter(sex == "K") %>%
+  group_by(group) %>%
+  get_summary_stats(Tscore_lumbar, type = "common")
+
+PHPT %>%
+  filter(sex == "M", !is.na(group)) %>%
+  t.test(Tscore_lumbar ~ group, data = .)
+
+PHPT %>%
+  filter(sex == "M") %>%
+  group_by(group) %>%
+  get_summary_stats(Tscore_lumbar, type = "common")
+
+
 ggplot(PHPT, aes(x = group, y = Tscore_lumbar, fill = group)) +
   geom_boxplot(alpha = 0.5) +
   scale_fill_manual(values = c("gray89", "gray27"))  +
@@ -458,6 +493,25 @@ t.test(Tscore_radial ~ group, data = subset(PHPT, group != "NA"))
 PHPT %>%
   group_by(group) %>%
   get_summary_stats(Tscore_radial, type = "common")
+
+PHPT %>%
+  filter(sex == "K", !is.na(group)) %>%
+  t.test(Tscore_radial ~ group, data = .)
+
+PHPT %>%
+  filter(sex == "K") %>%
+  group_by(group) %>%
+  get_summary_stats(Tscore_radial, type = "common")
+
+PHPT %>%
+  filter(sex == "M", !is.na(group)) %>%
+  t.test(Tscore_radial ~ group, data = .)
+
+PHPT %>%
+  filter(sex == "M") %>%
+  group_by(group) %>%
+  get_summary_stats(Tscore_radial, type = "common")
+
 ```
 
 
@@ -488,6 +542,20 @@ ggplot(PHPT, aes(x = group, y = Tscore_radial, fill = group)) +
   theme(legend.position = "none") +
   facet_wrap(vars(sex), labeller = labeller(sex = c('K' = 'female', 'M' = 'male'))) +
   theme(text = element_text(size = 12))
+```
+```{r include=FALSE}
+y <- ggplot(PHPT, aes(x = group, y = Tscore_radial, fill = group)) +
+  geom_boxplot(alpha = 0.5) +
+  scale_fill_manual(values = c("gray89", "gray27"))  +
+  scale_x_discrete(labels= c("study group", "control group")) +
+  labs(x = " ", y = "T-score radial site") +
+  stat_compare_means(method = 't.test', label = "p.format", size = 4) +
+  theme_bw() +
+  theme(legend.position = "none") +
+  facet_wrap(vars(sex), labeller = labeller(sex = c('K' = 'female', 'M' = 'male'))) +
+  theme(text = element_text(size = 12))
+
+ggsave("Tscoreradialsex.jpg", plot = y, width = 7, height = 4, dpi = 300)
 ```
 
 # Tscore_radial w grupie PHPT i kontrolnej z podziałem ze względu na płeć i wiek
@@ -595,6 +663,21 @@ ggplot(PHPT, aes(x = group, y = zscore_radial, fill = group)) +
   facet_wrap(vars(sex), labeller = labeller(sex = c('K' = 'female', 'M' = 'male'))) +
   theme(text = element_text(size = 12))
 ```
+```{r}
+e <- ggplot(PHPT, aes(x = group, y = zscore_radial, fill = group)) +
+  geom_boxplot(alpha = 0.5) +
+  scale_fill_manual(values = c("gray89", "gray27"))  +
+  scale_x_discrete(labels= c("study group", "control group")) +
+  labs(x = " ", y = "Z-score radial site") +
+  stat_compare_means(method = 't.test', label = "p.format", size = 4) +
+  theme_bw() +
+  theme(legend.position = "none") +
+  facet_wrap(vars(sex), labeller = labeller(sex = c('K' = 'female', 'M' = 'male'))) +
+  theme(text = element_text(size = 12))
+
+ggsave("Zscoreradialsex.jpg", plot = e, width = 7, height = 4, dpi = 300)
+```
+
 # PORÓWNANIE z-score radial pomiędzy grupą badaną a kontrolną z podziałem ze względu na wiek:
 ```{r}
 ggplot(PHPT, aes(x = group, y = zscore_radial, fill = group)) +
