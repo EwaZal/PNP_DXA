@@ -1,0 +1,390 @@
+---
+title: "PHPT DXA"
+author: "Ewa Zalewska, Lukasz Cieszynski, Monika Berendt - Obolonczyk, Julia Tarnowska, Bartosz Brzezinski, Renata Swiatkowska-Stodulska"
+date:  "`r format(Sys.time(), '%e %b %Y, godz. %H:%M')`"
+output:
+  html_document:
+    code_folding: hide
+---
+
+```{r, include=FALSE} 
+knitr::opts_chunk$set(warning = FALSE, message = FALSE) 
+```
+
+```{r setup, include=FALSE}
+library(dplyr)
+library(purrr)
+library(ggpubr)
+library(tidyr)
+library(scales)
+library(rstatix)
+library(ggplot2)
+library(ggpubr)
+library(ggsignif)
+
+
+plik_dane_do_analizy <- "PHPT.RDS"
+
+if (file.exists(plik_dane_do_analizy)) {
+  PHPT <- readRDS(plik_dane_do_analizy)
+} else {
+  stop(sprintf("Nie znaleziono pliku: `%s`. Uruchom notatnik przygotowujący zbiór danych!", plik_dane_do_analizy))
+}
+
+
+# Set global theme
+theme_set(theme_classic2(base_size = 13))
+
+
+
+score <- bind_cols(
+  PHPT %>%
+    select(LUMBAR = Tscore_lumbar, FEMUR = Tscore_femur_neck, RADIAL = Tscore_radial) %>%
+    pivot_longer(cols = everything(), names_to = "GRUPA", values_to = "Tscore"),
+  
+  PHPT %>%
+    select(zscore_lumbar, zscore_femur_neck, zscore_radial) %>%
+    pivot_longer(cols = everything(), names_to = NULL, values_to = "zscore") %>%
+    select(zscore),
+  
+  PHPT %>%
+    select(group, sex, age_split) %>%
+    slice(rep(1:n(), each = 3))  # powielamy wiersze x3, bo każdy pacjent ma 3 pomiary
+)
+
+scoreB <- score %>% 
+  filter(group == "B")
+
+scoreK <- score %>% 
+  filter(group == "K")
+```
+
+# porowananie Tscore 
+# ANOVA
+
+```{r}
+anova_result <- aov(Tscore ~ GRUPA, data = scoreB)
+summary(anova_result)
+
+# Tukey HSD
+tukey <- TukeyHSD(anova_result)
+tukey_df <- as.data.frame(tukey$GRUPA)
+tukey_df$comparison <- rownames(tukey_df)
+
+# Przygotowanie danych do adnotacji
+tukey_df <- tukey_df %>%
+  separate(comparison, into = c("group1", "group2"), sep = "-") %>%
+  mutate(p_label = ifelse(`p adj` < 0.001, "***",
+                          ifelse(`p adj` < 0.01, "**",
+                                 ifelse(`p adj` < 0.05, "*", "ns"))))
+
+# Tworzymy wykres
+ggplot(scoreB, aes(x = GRUPA, y = Tscore, fill = GRUPA)) +
+  geom_boxplot(width = 0.6, outlier.shape = NA) +
+  geom_jitter(width = 0.15, alpha = 0.5, color = "black") +
+  geom_signif(comparisons = list(c("LUMBAR", "FEMUR"),
+                                 c("LUMBAR", "RADIAL"),
+                                 c("FEMUR", "RADIAL")),
+              annotations = tukey_df$p_label,
+              y_position = c(2, 2.2, 2.4),
+              tip_length = 0.03) +
+  labs(title = "T-score comparisons",
+       y = "T-score", x = NULL) +
+  scale_fill_brewer(palette = "Set2") +
+  theme_minimal(base_size = 14) +
+  theme(legend.position = "none",
+        plot.title = element_text(face = "bold"),
+        plot.subtitle = element_text(size = 12))
+```
+
+
+# Tworzymy wykres - z podziałem na kobiety i mężczyzn oraz ze względu na wiek >= 50y/o:
+```{r}
+ggplot(scoreB, aes(x = GRUPA, y = Tscore, fill = GRUPA)) +
+  geom_boxplot(width = 0.6, outlier.shape = NA) +
+  geom_jitter(width = 0.15, alpha = 0.5, color = "black") +
+  geom_signif(comparisons = list(c("LUMBAR", "FEMUR"),
+                                 c("LUMBAR", "RADIAL"),
+                                 c("FEMUR", "RADIAL")),
+              annotations = tukey_df$p_label,
+              y_position = c(2, 2.2, 2.4),
+              tip_length = 0.03) +
+  facet_grid(sex ~ age_split, 
+             labeller = labeller(
+               sex = c('K' = 'female', 'M' = 'male'),
+               age_split = c('older' = '> 50 y/o', 'younger' = '< 50 y/o')
+             )) +
+  labs(title = "T-score comparisons",
+       y = "T-score", x = NULL) +
+  scale_fill_brewer(palette = "Set2") +
+  theme_minimal(base_size = 14) +
+  theme(legend.position = "none",
+        plot.title = element_text(face = "bold"),
+        plot.subtitle = element_text(size = 12))
+
+```
+
+
+```{r include=FALSE}
+w <- ggplot(scoreB, aes(x = GRUPA, y = Tscore, fill = GRUPA)) +
+  geom_boxplot(width = 0.6, outlier.shape = NA) +
+  geom_jitter(width = 0.15, alpha = 0.5, color = "black") +
+  geom_signif(comparisons = list(c("LUMBAR", "FEMUR"),
+                                 c("LUMBAR", "RADIAL"),
+                                 c("FEMUR", "RADIAL")),
+              annotations = tukey_df$p_label,
+              y_position = c(2, 2.2, 2.4),
+              tip_length = 0.03) +
+  facet_grid(sex ~ age_split, 
+             labeller = labeller(
+               sex = c('K' = 'female', 'M' = 'male'),
+               age_split = c('older' = '> 50 y/o', 'younger' = '< 50 y/o')
+             )) +
+  labs(title = "T-score comparisons",
+       y = "T-score", x = NULL) +
+  scale_fill_brewer(palette = "Set2") +
+  theme_minimal(base_size = 14) +
+  theme(legend.position = "none",
+        plot.title = element_text(face = "bold"),
+        plot.subtitle = element_text(size = 12))
+
+ggsave("wykresTscorewroznychlokalizacjachzpodzialemnapleciwiek.jpg", plot = w, width = 16, height = 9, dpi = 300)
+```
+
+
+# Tworzymy wykres z wartościami p
+```{r}
+ggplot(scoreB, aes(x = GRUPA, y = Tscore, fill = GRUPA)) +
+  geom_boxplot(width = 0.6, outlier.shape = NA) +
+  geom_jitter(width = 0.15, alpha = 0.5, color = "black") +
+  geom_signif(comparisons = list(c("LUMBAR", "FEMUR"),
+                                 c("LUMBAR", "RADIAL"),
+                                 c("FEMUR", "RADIAL")),
+              annotations = tukey_df$padj,
+              y_position = c(2, 2.2, 2.4),
+              tip_length = 0.03) +
+  labs(title = "T-score comparisons",
+       y = "T-score", x = NULL) +
+  scale_fill_brewer(palette = "Set2") +
+  theme_minimal(base_size = 14) +
+  theme(legend.position = "none",
+        plot.title = element_text(face = "bold"),
+        plot.subtitle = element_text(size = 12))
+
+```
+
+
+# Porównanie T-score w grupie kontrolnej
+```{r}
+anova_result <- aov(Tscore ~ GRUPA, data = scoreK)
+summary(anova_result)
+
+# Tukey HSD
+tukey <- TukeyHSD(anova_result)
+tukey_df <- as.data.frame(tukey$GRUPA)
+tukey_df$comparison <- rownames(tukey_df)
+
+# Przygotowanie danych do adnotacji
+tukey_df <- tukey_df %>%
+  separate(comparison, into = c("group1", "group2"), sep = "-") %>%
+  mutate(p_label = ifelse(`p adj` < 0.001, "***",
+                          ifelse(`p adj` < 0.01, "**",
+                                 ifelse(`p adj` < 0.05, "*", "ns"))))
+
+# Tworzymy wykres
+ggplot(scoreK, aes(x = GRUPA, y = Tscore, fill = GRUPA)) +
+  geom_boxplot(width = 0.6, outlier.shape = NA) +
+  geom_jitter(width = 0.15, alpha = 0.5, color = "black") +
+  geom_signif(comparisons = list(c("LUMBAR", "FEMUR"),
+                                 c("LUMBAR", "RADIAL"),
+                                 c("FEMUR", "RADIAL")),
+              annotations = tukey_df$p_label,
+              y_position = c(2, 2.2, 2.4),
+              tip_length = 0.03) +
+  labs(title = "T-score comparisons",
+       y = "T-score", x = NULL) +
+  scale_fill_brewer(palette = "Set2") +
+  theme_minimal(base_size = 14) +
+  theme(legend.position = "none",
+        plot.title = element_text(face = "bold"),
+        plot.subtitle = element_text(size = 12))
+```
+
+
+# Tworzymy wykres - z podziałem na kobiety i mężczyzn oraz ze względu na wiek >= 50y/o:
+```{r}
+ggplot(scoreK, aes(x = GRUPA, y = Tscore, fill = GRUPA)) +
+  geom_boxplot(width = 0.6, outlier.shape = NA) +
+  geom_jitter(width = 0.15, alpha = 0.5, color = "black") +
+  geom_signif(comparisons = list(c("LUMBAR", "FEMUR"),
+                                 c("LUMBAR", "RADIAL"),
+                                 c("FEMUR", "RADIAL")),
+              annotations = tukey_df$p_label,
+              y_position = c(2, 2.2, 2.4),
+              tip_length = 0.03) +
+  facet_grid(sex ~ age_split, 
+             labeller = labeller(
+               sex = c('K' = 'female', 'M' = 'male'),
+               age_split = c('older' = '> 50 y/o', 'younger' = '< 50 y/o')
+             )) +
+  labs(title = "T-score comparisons",
+       y = "T-score", x = NULL) +
+  scale_fill_brewer(palette = "Set2") +
+  theme_minimal(base_size = 14) +
+  theme(legend.position = "none",
+        plot.title = element_text(face = "bold"),
+        plot.subtitle = element_text(size = 12))
+
+```
+
+
+# porowananie Zscore 
+# ANOVA
+
+```{r}
+anova_result <- aov(zscore ~ GRUPA, data = scoreB)
+summary(anova_result)
+
+# Tukey HSD
+tukey <- TukeyHSD(anova_result)
+tukey_df <- as.data.frame(tukey$GRUPA)
+tukey_df$comparison <- rownames(tukey_df)
+
+# Przygotowanie danych do adnotacji
+tukey_df <- tukey_df %>%
+  separate(comparison, into = c("group1", "group2"), sep = "-") %>%
+  mutate(p_label = ifelse(`p adj` < 0.001, "***",
+                          ifelse(`p adj` < 0.01, "**",
+                                 ifelse(`p adj` < 0.05, "*", "ns"))))
+
+# Tworzymy wykres
+ggplot(scoreB, aes(x = GRUPA, y = zscore, fill = GRUPA)) +
+  geom_boxplot(width = 0.6, outlier.shape = NA) +
+  geom_jitter(width = 0.15, alpha = 0.5, color = "black") +
+  geom_signif(comparisons = list(c("LUMBAR", "FEMUR"),
+                                 c("LUMBAR", "RADIAL"),
+                                 c("FEMUR", "RADIAL")),
+              annotations = tukey_df$p_label,
+              y_position = c(2, 2.2, 2.4),
+              tip_length = 0.03) +
+  labs(title = "Z-score comparisons",
+       y = "Z-score", x = NULL) +
+  scale_fill_brewer(palette = "Set2") +
+  theme_minimal(base_size = 14) +
+  theme(legend.position = "none",
+        plot.title = element_text(face = "bold"),
+        plot.subtitle = element_text(size = 12))
+```
+
+
+# Tworzymy wykres - z podziałem na kobiety i mężczyzn oraz ze względu na wiek >= 50y/o:
+```{r}
+ggplot(scoreB, aes(x = GRUPA, y = zscore, fill = GRUPA)) +
+  geom_boxplot(width = 0.6, outlier.shape = NA) +
+  geom_jitter(width = 0.15, alpha = 0.5, color = "black") +
+  geom_signif(comparisons = list(c("LUMBAR", "FEMUR"),
+                                 c("LUMBAR", "RADIAL"),
+                                 c("FEMUR", "RADIAL")),
+              annotations = tukey_df$p_label,
+              y_position = c(2, 2.2, 2.4),
+              tip_length = 0.03) +
+  facet_grid(sex ~ age_split, 
+             labeller = labeller(
+               sex = c('K' = 'female', 'M' = 'male'),
+               age_split = c('older' = '> 50 y/o', 'younger' = '< 50 y/o')
+             )) +
+  labs(title = "Z-score comparisons",
+       y = "Z-score", x = NULL) +
+  scale_fill_brewer(palette = "Set2") +
+  theme_minimal(base_size = 14) +
+  theme(legend.position = "none",
+        plot.title = element_text(face = "bold"),
+        plot.subtitle = element_text(size = 12))
+
+```
+
+# Tworzymy wykres z wartościami p
+```{r}
+ggplot(scoreB, aes(x = GRUPA, y = zscore, fill = GRUPA)) +
+  geom_boxplot(width = 0.6, outlier.shape = NA) +
+  geom_jitter(width = 0.15, alpha = 0.5, color = "black") +
+  geom_signif(comparisons = list(c("LUMBAR", "FEMUR"),
+                                 c("LUMBAR", "RADIAL"),
+                                 c("FEMUR", "RADIAL")),
+              annotations = tukey_df$padj,
+              y_position = c(2, 2.2, 2.4),
+              tip_length = 0.03) +
+  labs(title = "Z-score comparisons",
+       y = "Z-score", x = NULL) +
+  scale_fill_brewer(palette = "Set2") +
+  theme_minimal(base_size = 14) +
+  theme(legend.position = "none",
+        plot.title = element_text(face = "bold"),
+        plot.subtitle = element_text(size = 12))
+```
+
+
+# Porównanie Z-score w grupie kontrolnej
+```{r}
+anova_result <- aov(zscore ~ GRUPA, data = scoreK)
+summary(anova_result)
+
+# Tukey HSD
+tukey <- TukeyHSD(anova_result)
+tukey_df <- as.data.frame(tukey$GRUPA)
+tukey_df$comparison <- rownames(tukey_df)
+
+# Przygotowanie danych do adnotacji
+tukey_df <- tukey_df %>%
+  separate(comparison, into = c("group1", "group2"), sep = "-") %>%
+  mutate(p_label = ifelse(`p adj` < 0.001, "***",
+                          ifelse(`p adj` < 0.01, "**",
+                                 ifelse(`p adj` < 0.05, "*", "ns"))))
+
+# Tworzymy wykres
+ggplot(scoreK, aes(x = GRUPA, y = zscore, fill = GRUPA)) +
+  geom_boxplot(width = 0.6, outlier.shape = NA) +
+  geom_jitter(width = 0.15, alpha = 0.5, color = "black") +
+  geom_signif(comparisons = list(c("LUMBAR", "FEMUR"),
+                                 c("LUMBAR", "RADIAL"),
+                                 c("FEMUR", "RADIAL")),
+              annotations = tukey_df$p_label,
+              y_position = c(2, 2.2, 2.4),
+              tip_length = 0.03) +
+  labs(title = "Z-score comparisons",
+       y = "Z-score", x = NULL) +
+  scale_fill_brewer(palette = "Set2") +
+  theme_minimal(base_size = 14) +
+  theme(legend.position = "none",
+        plot.title = element_text(face = "bold"),
+        plot.subtitle = element_text(size = 12))
+```
+
+
+# Tworzymy wykres - z podziałem na kobiety i mężczyzn oraz ze względu na wiek >= 50y/o:
+```{r}
+ggplot(scoreK, aes(x = GRUPA, y = zscore, fill = GRUPA)) +
+  geom_boxplot(width = 0.6, outlier.shape = NA) +
+  geom_jitter(width = 0.15, alpha = 0.5, color = "black") +
+  geom_signif(comparisons = list(c("LUMBAR", "FEMUR"),
+                                 c("LUMBAR", "RADIAL"),
+                                 c("FEMUR", "RADIAL")),
+              annotations = tukey_df$p_label,
+              y_position = c(2, 2.2, 2.4),
+              tip_length = 0.03) +
+  facet_grid(sex ~ age_split, 
+             labeller = labeller(
+               sex = c('K' = 'female', 'M' = 'male'),
+               age_split = c('older' = '> 50 y/o', 'younger' = '< 50 y/o')
+             )) +
+  labs(title = "Z-score comparisons",
+       y = "Z-score", x = NULL) +
+  scale_fill_brewer(palette = "Set2") +
+  theme_minimal(base_size = 14) +
+  theme(legend.position = "none",
+        plot.title = element_text(face = "bold"),
+        plot.subtitle = element_text(size = 12))
+
+```
+
+
