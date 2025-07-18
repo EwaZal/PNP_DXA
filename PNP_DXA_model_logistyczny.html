@@ -351,7 +351,7 @@ display: none;
 
 <h1 class="title toc-ignore">PHPT DXA</h1>
 <h4 class="author">Ewa Zalewska</h4>
-<h4 class="date">17 lip 2025, godz. 22:25</h4>
+<h4 class="date">18 lip 2025, godz. 15:42</h4>
 
 </div>
 
@@ -490,13 +490,13 @@ summary(PHPT_ml)</code></pre>
 ##  3rd Qu.:-0.2395   3rd Qu.: 1.9021   3rd Qu.: 0.6419   3rd Qu.: 0.32534  
 ##  Max.   : 0.1415   Max.   : 3.3673   Max.   : 3.0910   Max.   : 0.46436  
 ##  NA&#39;s   :3                                             NA&#39;s   :45        
-##   TBS_split        
-##  Length:237        
-##  Class :character  
-##  Mode  :character  
-##                    
-##                    
-##                    
+##   TBS_split          age_split        
+##  Length:237         Length:237        
+##  Class :character   Class :character  
+##  Mode  :character   Mode  :character  
+##                                       
+##                                       
+##                                       
 ## </code></pre>
 <div id="z-jakimi-cechami-wiązało-się-występowanie-zlamań-w-modelu-logistycznym" class="section level2">
 <h2>Z jakimi cechami wiązało się występowanie zlamań w modelu
@@ -1103,6 +1103,9 @@ summary(model9)</code></pre>
 ## model7 10 190.7530
 ## model8 11 206.1728
 ## model9  7 185.1886</code></pre>
+</div>
+<div id="model-10" class="section level2">
+<h2>Model 10</h2>
 <pre class="r"><code>model10 &lt;- glm(fracture ~ age + sex + BMI + nicotine_dependence + TBS + Tscore_femur_neck + Tscore_radial + Tscore_lumbar, data = PHPT_ml, family = binomial)
 summary(model10)</code></pre>
 <pre><code>## 

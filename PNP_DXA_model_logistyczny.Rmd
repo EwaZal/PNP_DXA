@@ -198,7 +198,7 @@ exp(confint(model9))
 BIC(model0, model1, model2, model3, model4, model5, model6, model7, model8, model9)
 ```
 
-
+## Model 10
 ```{r}
 model10 <- glm(fracture ~ age + sex + BMI + nicotine_dependence + TBS + Tscore_femur_neck + Tscore_radial + Tscore_lumbar, data = PHPT_ml, family = binomial)
 summary(model10)
