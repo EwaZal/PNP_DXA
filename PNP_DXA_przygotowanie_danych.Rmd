@@ -65,11 +65,12 @@ PHPT <- PHPT %>%
          log_TBS = log(TBS))
 
 PHPT <- PHPT %>%
-  mutate(age_split = case_when (age > 50 ~ "postM",
-                                age < 50 ~ "preM"))
+  mutate(age_split = case_when (age >= 50 ~ "older",
+                                age < 50 ~ "younger"))
+
 
 PHPT <- PHPT %>%
-  mutate(TBS_split = case_when (TBS > 1.2 ~ "high",
+  mutate(TBS_split = case_when (TBS >= 1.2 ~ "high",
                                 TBS < 1.2 ~ "low"))
 
 
