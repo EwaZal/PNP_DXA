@@ -86,7 +86,7 @@ ggplot(scoreB, aes(x = GRUPA, y = Tscore, fill = GRUPA)) +
                                  c("LUMBAR", "RADIAL"),
                                  c("FEMUR", "RADIAL")),
               annotations = tukey_df$p_label,
-              y_position = c(2, 2.2, 2.4),
+              y_position = c(2, 2.2, 2.8),
               tip_length = 0.03) +
   labs(title = "T-score comparisons",
        y = "T-score", x = NULL) +
@@ -107,7 +107,7 @@ ggplot(scoreB, aes(x = GRUPA, y = Tscore, fill = GRUPA)) +
                                  c("LUMBAR", "RADIAL"),
                                  c("FEMUR", "RADIAL")),
               annotations = tukey_df$p_label,
-              y_position = c(2, 2.2, 2.4),
+              y_position = c(2, 2.2, 2.8),
               tip_length = 0.03) +
   facet_grid(sex ~ age_split, 
              labeller = labeller(
@@ -133,7 +133,7 @@ w <- ggplot(scoreB, aes(x = GRUPA, y = Tscore, fill = GRUPA)) +
                                  c("LUMBAR", "RADIAL"),
                                  c("FEMUR", "RADIAL")),
               annotations = tukey_df$p_label,
-              y_position = c(2, 2.2, 2.4),
+              y_position = c(2, 2.2, 2.8),
               tip_length = 0.03) +
   facet_grid(sex ~ age_split, 
              labeller = labeller(
@@ -161,7 +161,7 @@ ggplot(scoreB, aes(x = GRUPA, y = Tscore, fill = GRUPA)) +
                                  c("LUMBAR", "RADIAL"),
                                  c("FEMUR", "RADIAL")),
               annotations = tukey_df$padj,
-              y_position = c(2, 2.2, 2.4),
+              y_position = c(2, 2.2, 2.8),
               tip_length = 0.03) +
   labs(title = "T-score comparisons",
        y = "T-score", x = NULL) +
@@ -199,7 +199,7 @@ ggplot(scoreK, aes(x = GRUPA, y = Tscore, fill = GRUPA)) +
                                  c("LUMBAR", "RADIAL"),
                                  c("FEMUR", "RADIAL")),
               annotations = tukey_df$p_label,
-              y_position = c(2, 2.2, 2.4),
+              y_position = c(2, 2.2, 2.8),
               tip_length = 0.03) +
   labs(title = "T-score comparisons",
        y = "T-score", x = NULL) +
@@ -220,7 +220,7 @@ ggplot(scoreK, aes(x = GRUPA, y = Tscore, fill = GRUPA)) +
                                  c("LUMBAR", "RADIAL"),
                                  c("FEMUR", "RADIAL")),
               annotations = tukey_df$p_label,
-              y_position = c(2, 2.2, 2.4),
+              y_position = c(2, 2.2, 2.8),
               tip_length = 0.03) +
   facet_grid(sex ~ age_split, 
              labeller = labeller(
@@ -265,7 +265,7 @@ ggplot(scoreB, aes(x = GRUPA, y = zscore, fill = GRUPA)) +
                                  c("LUMBAR", "RADIAL"),
                                  c("FEMUR", "RADIAL")),
               annotations = tukey_df$p_label,
-              y_position = c(2, 2.2, 2.4),
+              y_position = c(2, 2.2, 2.8),
               tip_length = 0.03) +
   labs(title = "Z-score comparisons",
        y = "Z-score", x = NULL) +
@@ -286,7 +286,7 @@ ggplot(scoreB, aes(x = GRUPA, y = zscore, fill = GRUPA)) +
                                  c("LUMBAR", "RADIAL"),
                                  c("FEMUR", "RADIAL")),
               annotations = tukey_df$p_label,
-              y_position = c(2, 2.2, 2.4),
+              y_position = c(2, 2.2, 2.8),
               tip_length = 0.03) +
   facet_grid(sex ~ age_split, 
              labeller = labeller(
@@ -312,7 +312,7 @@ ggplot(scoreB, aes(x = GRUPA, y = zscore, fill = GRUPA)) +
                                  c("LUMBAR", "RADIAL"),
                                  c("FEMUR", "RADIAL")),
               annotations = tukey_df$padj,
-              y_position = c(2, 2.2, 2.4),
+              y_position = c(2, 2.2, 2.8),
               tip_length = 0.03) +
   labs(title = "Z-score comparisons",
        y = "Z-score", x = NULL) +
@@ -349,7 +349,7 @@ ggplot(scoreK, aes(x = GRUPA, y = zscore, fill = GRUPA)) +
                                  c("LUMBAR", "RADIAL"),
                                  c("FEMUR", "RADIAL")),
               annotations = tukey_df$p_label,
-              y_position = c(2, 2.2, 2.4),
+              y_position = c(2, 2.2, 2.8),
               tip_length = 0.03) +
   labs(title = "Z-score comparisons",
        y = "Z-score", x = NULL) +
@@ -370,7 +370,7 @@ ggplot(scoreK, aes(x = GRUPA, y = zscore, fill = GRUPA)) +
                                  c("LUMBAR", "RADIAL"),
                                  c("FEMUR", "RADIAL")),
               annotations = tukey_df$p_label,
-              y_position = c(2, 2.2, 2.4),
+              y_position = c(2, 2.2, 2.8),
               tip_length = 0.03) +
   facet_grid(sex ~ age_split, 
              labeller = labeller(
