@@ -35,29 +35,6 @@ PHPT_B <- PHPT %>%
 # Set global theme
 theme_set(theme_classic2(base_size = 13))
 ```
-# sprawdzenie rozkladu - w obu grupach (PHPT i kontrolnej)
-```{r}
-PHPT %>%
-  select(age, weight, Ca, Pi, iPTH, nOHD, aOHD, Cr, albumin, BMD_neck, HF_risk, MOF_risk, Tscore_femur_neck, Tscore_femur_total, Tscore_lumbar, Tscore_radial, zscore_femur_neck, zscore_femur_total, zscore_lumbar, zscore_radial) %>%
-  map(shapiro.test)
-```
-# sprawdzenie rozkladu w grupie PHPT:
-```{r}
-PHPT %>%
-  filter(group == "B") %>%
-  select(age, weight, Ca, Pi, iPTH, nOHD, aOHD, Cr, albumin, BMD_neck, HF_risk, MOF_risk, Tscore_femur_neck, Tscore_femur_total, Tscore_lumbar, Tscore_radial, zscore_femur_neck, zscore_femur_total, zscore_lumbar, zscore_radial) %>%
-  map(shapiro.test)
-```
-# sprawdzenie rozkladu w grupie kontrolnej:
-```{r}
-PHPT %>%
-  filter(group == "K") %>%
-  select(nOHD, BMD_neck, Tscore_femur_neck, Tscore_femur_total, Tscore_lumbar, Tscore_radial, zscore_femur_neck, zscore_femur_total, zscore_lumbar, zscore_radial) %>%
-  map(shapiro.test)
-```
-# Rozklad normalny maja zmienne: Tscore_femur_neck, Tscore_femur_total, Tscore_lumbar, Tscore_radial, zscore_femur_neck, zscore_femur_total, zscore_lumbar, zscore_radial
-
-
 
 # POROWNANIE GRUPY PHPT i KONTROLNEJ POD WZGLEDEM ILOSCI KOBIET I MEZCZYZN
 ```{r}
@@ -416,6 +393,7 @@ ggplot(PHPT, aes(x = group, y = Tscore_lumbar, fill = group)) +
   facet_wrap(vars(age_split), labeller = labeller(age_split = c('older' = '> 50 y/o', 'younger' = '< 50 y/o'))) +
   theme(text = element_text(size = 12))
 ```
+
 # T_score _lumbar z podziałem ze względu na płeć i wiek
 ```{r}
 PHPT %>%
