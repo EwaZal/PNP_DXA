@@ -838,7 +838,7 @@ ggplot(PHPT, aes(Ca, BMD_neck)) +
 
 ```
 
-# Ca a BMD w grupie badanej logarytm z Ca
+# Logarytm z Ca a BMD w grupie badanej
 ```{r}
 ggplot(PHPT, aes(log_Ca, BMD_neck)) +
   geom_point() +
@@ -849,7 +849,7 @@ ggplot(PHPT, aes(log_Ca, BMD_neck)) +
   stat_cor(method = "spearman")
 ```
 
-# Ca a BMD w grupie badanej logarytm z Ca i BMD
+# Logarytm z Ca a Logarytm z BMD w grupie badanej
 ```{r}
 ggplot(PHPT, aes(log_Ca, log_BMD)) +
   geom_point() +
@@ -860,7 +860,7 @@ ggplot(PHPT, aes(log_Ca, log_BMD)) +
   stat_cor(method = "spearman")
 ```
 
-# Ca a BMD w grupie badanej logarytm z BMD
+# Ca a logarytm z BMD w grupie badanej
 ```{r}
 ggplot(PHPT, aes(Ca, log_BMD)) +
   geom_point() +
@@ -952,7 +952,7 @@ ggplot(PHPT, aes(Ca, TBS)) +
   stat_cor(method = "spearman")
 ```
 
-# PTH a BMD
+# iPTH a BMD
 ```{r}
 ggplot(PHPT, aes(iPTH, BMD_neck)) +
   geom_point() +
@@ -961,7 +961,7 @@ ggplot(PHPT, aes(iPTH, BMD_neck)) +
   labs(x = "BMD femur neck", y ="PTH") +
   stat_cor(method = "pearson")
 ```
-# PTH a BMD - w grupie badanej i kontrolnej
+# iPTH a BMD - w grupie badanej i kontrolnej
 ```{r}
 ggplot(PHPT, aes(iPTH, BMD_neck)) +
   geom_point() +
@@ -972,7 +972,7 @@ ggplot(PHPT, aes(iPTH, BMD_neck)) +
   stat_cor(method = "spearman")
 ```
 
-# iPTH - logarytm a BMD szyjki kości udowej
+# logarytm z iPTH a BMD szyjki kości udowej
 ```{r}
 ggplot(PHPT, aes(log_iPTH, BMD_neck)) +
   geom_point() +
@@ -983,7 +983,7 @@ ggplot(PHPT, aes(log_iPTH, BMD_neck)) +
 ```
 
 
-# PTH - logarytm a BMD z podzialem na grupy
+# logarytm z PTH a BMD z podzialem na grupy badaną i kontrolną
 ```{r}
 ggplot(PHPT, aes(log_iPTH, BMD_neck)) +
   geom_point() +
@@ -996,7 +996,7 @@ ggplot(PHPT, aes(log_iPTH, BMD_neck)) +
 
 
 # z MOF_risk
-# Ca a  MOF
+# Ca a ryzyko złamania głównego (MOF_risk)
 ```{r}
 ggplot(PHPT, aes(Ca, MOF_risk)) +
   geom_point() +
@@ -1007,7 +1007,7 @@ ggplot(PHPT, aes(Ca, MOF_risk)) +
 ```
 
 # z MOF_risk
-# iPTH a  MOF - brak korelacji
+# iPTH a  ryzyko złamania głównego
 ```{r}
 ggplot(PHPT, aes(log_iPTH, MOF_risk)) +
   geom_point() +
@@ -1018,7 +1018,7 @@ ggplot(PHPT, aes(log_iPTH, MOF_risk)) +
 ```
 
 # z HF_risk
-# Ca a  MOF
+# Ca a ryzyko złamania biodra
 ```{r}
 ggplot(PHPT, aes(Ca, HF_risk)) +
   geom_point() +
@@ -1051,7 +1051,7 @@ ggplot(PHPT, aes(TBS, MOF_risk)) +
   stat_cor(method = "spearman")
 ```
 
-# TBS a MOF w grupie badanej i kontrolnej
+# TBS a MOF risk w grupie badanej i kontrolnej
 ```{r}
 ggplot(PHPT, aes(TBS, MOF_risk)) +
   geom_point() +
@@ -1083,7 +1083,7 @@ ggplot(PHPT, aes(TBS, HF_risk)) +
   stat_cor(method = "spearman")
 ```
 
-# BMD a MOF w grupie badanej i kontrolnej
+# BMD a MOF risk w grupie badanej i kontrolnej
 ```{r}
 ggplot(PHPT, aes(BMD_neck, MOF_risk)) +
   geom_point() +
@@ -1094,7 +1094,7 @@ ggplot(PHPT, aes(BMD_neck, MOF_risk)) +
   stat_cor(method = "spearman")
 ```
 
-# BMD a HF risk w grupach
+# BMD a logarytm z HF risk w grupach badanej i kontrolnej 
 ```{r}
 ggplot(PHPT, aes(BMD_neck, log_HF)) +
   geom_point() +
