@@ -743,7 +743,7 @@ ggplot(data = subset(PHPT, TBS != "NA"), aes(x = group, y = TBS, fill = group)) 
              ))
 ```
 
-# NOWE DO DOPISANIA: wykres porownujacy TBS w grupie badanej i kontrolnej pomiedzy osobami bez i ze złamaniami -  w grupie osób ze złamaniami w wywiadzie stwierdzono istotnie niższe TBS w grupie PHPT:
+# Ważne: wykres porownujacy TBS w grupie badanej i kontrolnej pomiedzy osobami bez i ze złamaniami - w grupie osób z PHPT i złamaniami w wywiadzie stwierdzono istotnie niższe TBS w porównaniu do osób z PHPT bez złamań w wywiadzie.
 ```{r, warning = FALSE, message = FALSE}
 ggplot(PHPT, aes(x = fracture, y = TBS, fill = fracture)) +
   geom_boxplot(alpha = 0.5) +
@@ -786,7 +786,7 @@ PHPT_B %>%
 
 ```
 
-# NOWE I CIKAWE DO OPISANIA: czy jest zwiazek miedzy zlamaniami w wywiadzie a TBS <1.2 i >1.2? - TAK, wychodzi, ze jest wiecej zlaman u osob z nizszym TBS niż z wyższym:
+# Ważne: Czy jest zwiazek miedzy zlamaniami w wywiadzie a TBS <1.2 i >1.2? - TAK, wychodzi, ze jest wiecej zlaman u osob z nizszym TBS niż z wyższym:
 ```{r}
 mosaicplot(~ fracture + TBS_split, data = PHPT_B, color = TRUE)
 
