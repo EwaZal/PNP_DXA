@@ -1105,3 +1105,32 @@ ggplot(PHPT, aes(BMD_neck, log_HF)) +
   stat_cor(method = "spearman")
 ```
 # VFA w grupach badanej i kontrolnej?
+```{r}
+PHPT %>%
+  filter(Tscore_lumbar <= -1 | Tscore_femur_neck <= -1 | Tscore_femur_total <= -1) %>%
+  group_by(group) %>%
+  count(VFA)
+
+
+PHPT %>%
+  group_by(group) %>%
+  count(VFA)
+
+mosaicplot(~ group + VFA, data = PHPT, color = TRUE)
+
+fisher.test(table(PHPT$group, PHPT$VFA))
+
+pairwise_fisher_test(table(PHPT$group, PHPT$VFA), p.adjust.method = "fdr")
+
+
+PHPT_clean <- PHPT %>%
+  filter(VFA %in% c("fracture","normal"))
+
+PHPT_clean
+
+# podgląd: mozaika
+mosaicplot(~ group + VFA, data = PHPT_clean, color = TRUE)
+
+pairwise_fisher_test(table(PHPT_clean$group, PHPT_clean$VFA), p.adjust.method = "fdr")
+
+```
