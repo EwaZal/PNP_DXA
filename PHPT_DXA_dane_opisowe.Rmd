@@ -1104,3 +1104,4 @@ ggplot(PHPT, aes(BMD_neck, log_HF)) +
   facet_wrap(vars(group), labeller = labeller(group = c('B' = 'study group', 'K' = 'control group'))) +
   stat_cor(method = "spearman")
 ```
+# VFA w grupach badanej i kontrolnej?
