@@ -93,10 +93,10 @@ exp(coef(modelPHPT1))
 # przedziały ufności 95%:
 exp(confint(modelPHPT1))
 BIC(modelPHPT1)
-BIC(modelPHTP, modelPHPT1)
+BIC(modelPHPT, modelPHPT1)
 ```
 
-## Z jakimi cechami wiązało się występowanie zlamań w grupie badanej w modelu logistycznym?
+## Z jakimi cechami wiązało się występowanie zlamań w grupie badanej w modelu logistycznym? - JEDNAK TEN WBRANY BO AIC 129.3 (niższy)
 ``` {r}
 modelPHPT2 <- glm(fracture_any ~ sex + age + BMI + nicotine_dependence + Ca + iPTH + TBS + BMD_neck, data = dplyr::filter(PHPT_ml, group=="B"), family = binomial)
 summary(modelPHPT2)
@@ -105,7 +105,7 @@ exp(coef(modelPHPT2))
 # przedziały ufności 95%:
 exp(confint(modelPHPT2))
 BIC(modelPHPT2)
-BIC(modelPHTP, modelPHPT1, modelPHPT2)
+BIC(modelPHPT, modelPHPT1, modelPHPT2)
 ```
 
 ``` {r}
@@ -116,7 +116,7 @@ exp(coef(modelPHPT3))
 # przedziały ufności 95%:
 exp(confint(modelPHPT3))
 BIC(modelPHPT3)
-BIC(modelPHTP, modelPHPT1, modelPHPT2, modelPHPT3)
+BIC(modelPHPT, modelPHPT1, modelPHPT2, modelPHPT3)
 ```
 
 ## Model 0 
