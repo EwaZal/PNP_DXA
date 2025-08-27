@@ -1,0 +1,281 @@
+---
+title: "PHPT DXA"
+author: "Ewa Zalewska"
+date:  "`r format(Sys.time(), '%e %b %Y, godz. %H:%M')`"
+output:
+  html_document:
+  code_folding: hide
+---
+  
+  
+```{r, include=FALSE} 
+knitr::opts_chunk$set(warning = FALSE, message = FALSE) 
+```
+
+```{r setup, include=FALSE}
+library(dplyr)
+library(purrr)
+library(ggpubr)
+library(tidyr)
+library(scales)
+library(rstatix)
+library(ggplot2)
+library(ggpubr)
+library(lubridate)
+library(mice)
+
+plik_dane_do_analizy <- "PHPT.RDS"
+
+if (file.exists(plik_dane_do_analizy)) {
+  PHPT <- readRDS(plik_dane_do_analizy)
+} else {
+  stop(sprintf("Nie znaleziono pliku: `%s`. Uruchom notatnik przygotowujący zbiór danych!", plik_dane_do_analizy))
+}
+
+PHPT_ml <- PHPT
+
+zmienne <- c("fracture_any", "nicotine_dependence")
+
+PHPT_ml[zmienne] <- lapply(PHPT_ml[zmienne], function(x) ifelse(x == "Y", 1, 0))
+PHPT_ml$sex <- ifelse(PHPT_ml$sex == "K", 1, 0)
+
+
+# PHPT$fracture_bin <- ifelse(PHPT$fracture == "Y", 1, 0)
+# PHPT$nicotine_dependence_bin <- ifelse(PHPT$nicotine_dependence == "Y", 1, 0)
+
+```
+
+
+# algorytm MICE 
+``` {r}
+
+kolumny_do_imputacji <- c("TBS", "Tscore_lumbar", "Tscore_femur_neck", "Tscore_radial", "BMD_neck")
+dane_subset <- PHPT_ml[, kolumny_do_imputacji]
+
+imputacja <- mice(dane_subset, m = 5, method = 'pmm', seed = 123)
+
+dane_imputowane <- complete(imputacja, 1)
+
+PHPT_ml[, kolumny_do_imputacji] <- dane_imputowane
+
+summary(PHPT_ml)
+
+```
+
+
+
+## Z jakimi cechami wiązało się występowanie zlamań w modelu logistycznym?
+``` {r}
+model <- glm(fracture_any ~ group + sex + age + BMI + nicotine_dependence + Ca + iPTH + Tscore_femur_neck + Tscore_radial + Tscore_lumbar + TBS + BMD_neck, data = PHPT_ml, family = binomial)
+summary(model)
+# OR
+exp(coef(model))
+# przedziały ufności 95%:
+exp(confint(model))
+BIC(model)
+```
+## Z jakimi cechami wiązało się występowanie zlamań w grupie badanej w modelu logistycznym? - WYBRANY - SPRAWDZ, DOPRACUJ
+``` {r}
+modelPHPT <- glm(fracture_any ~ sex + age + BMI + nicotine_dependence + Ca + iPTH + Tscore_radial + Tscore_lumbar + TBS + BMD_neck, data = dplyr::filter(PHPT_ml, group=="B"), family = binomial)
+summary(modelPHPT)
+# OR
+exp(coef(modelPHPT))
+# przedziały ufności 95%:
+exp(confint(modelPHPT))
+BIC(modelPHPT)
+```
+## Z jakimi cechami wiązało się występowanie zlamań w grupie badanej w modelu logistycznym?
+``` {r}
+modelPHPT1 <- glm(fracture_any ~ sex + age + BMI + nicotine_dependence + Ca + iPTH + Tscore_radial + Tscore_lumbar + TBS + BMD_neck + Tscore_femur_neck, data = dplyr::filter(PHPT_ml, group=="B"), family = binomial)
+summary(modelPHPT1)
+# OR
+exp(coef(modelPHPT1))
+# przedziały ufności 95%:
+exp(confint(modelPHPT1))
+BIC(modelPHPT1)
+BIC(modelPHTP, modelPHPT1)
+```
+
+## Z jakimi cechami wiązało się występowanie zlamań w grupie badanej w modelu logistycznym?
+``` {r}
+modelPHPT2 <- glm(fracture_any ~ sex + age + BMI + nicotine_dependence + Ca + iPTH + TBS + BMD_neck, data = dplyr::filter(PHPT_ml, group=="B"), family = binomial)
+summary(modelPHPT2)
+# OR
+exp(coef(modelPHPT2))
+# przedziały ufności 95%:
+exp(confint(modelPHPT2))
+BIC(modelPHPT2)
+BIC(modelPHTP, modelPHPT1, modelPHPT2)
+```
+
+``` {r}
+modelPHPT3 <- glm(fracture_any ~ sex + age + BMI + nicotine_dependence + Ca + iPTH + Tscore_radial + Tscore_lumbar + TBS + Tscore_femur_neck, data = dplyr::filter(PHPT_ml, group=="B"), family = binomial)
+summary(modelPHPT3)
+# OR
+exp(coef(modelPHPT3))
+# przedziały ufności 95%:
+exp(confint(modelPHPT3))
+BIC(modelPHPT3)
+BIC(modelPHTP, modelPHPT1, modelPHPT2, modelPHPT3)
+```
+
+## Model 0 
+
+```{r}
+model0 <- glm(fracture_any ~ 1, data = dplyr::filter(PHPT_ml, group=="B"), family = binomial)
+summary(model0)
+exp(coef(model0))
+exp(confint(model0))
+BIC(model0)
+```
+
+
+## Model 1 
+
+```{r}
+model1 <- glm(fracture_any ~ age, data = dplyr::filter(PHPT_ml, group=="B"), family = binomial)
+summary(model1)
+exp(coef(model1))
+exp(confint(model1))
+BIC(model0, model1)
+```
+
+## Model 2
+
+```{r}
+model2 <- glm(fracture_any ~ age + sex, data = dplyr::filter(PHPT_ml, group=="B"), family = binomial)
+summary(model2)
+exp(coef(model2))
+exp(confint(model2))
+BIC(model0, model1, model2)
+```
+
+## Model 3
+
+```{r}
+model3 <- glm(fracture_any ~ age * sex , data = dplyr::filter(PHPT_ml, group=="B"), family = binomial)
+summary(model3)
+exp(coef(model3))
+exp(confint(model3))
+BIC(model0, model1, model2, model3)
+```
+
+## Model 4
+
+```{r}
+model4 <- glm(fracture_any ~ age + sex + group, data = PHPT_ml, family = binomial)
+summary(model4)
+exp(coef(model4))
+exp(confint(model4))
+BIC(model0, model1, model2, model3, model4)
+```
+
+## Model 5
+
+```{r}
+model5 <- glm(fracture_any ~ age + sex + TBS, data = dplyr::filter(PHPT_ml, group=="B"), family = binomial)
+summary(model5)
+exp(coef(model5))
+exp(confint(model5))
+BIC(model0, model1, model2, model3, model4, model5)
+```
+
+## Model 5B
+
+```{r}
+model5B <- glm(fracture_any ~ age * sex + TBS, data = dplyr::filter(PHPT_ml, group=="B"), family = binomial)
+summary(model5B)
+exp(coef(model5B))
+exp(confint(model5B))
+BIC(model5B)
+```
+
+## Model 6
+
+```{r}
+model6 <- glm(fracture_any ~ age + sex + TBS + BMI + nicotine_dependence + Ca + iPTH, data = dplyr::filter(PHPT_ml, group=="B"), family = binomial)
+summary(model6)
+exp(coef(model6))
+exp(confint(model6))
+BIC(model0, model1, model2, model3, model4, model5, model6)
+```
+
+
+## Model 7
+
+```{r}
+model7 <-  glm(fracture_any ~ age + sex + TBS + BMI + nicotine_dependence + Ca + iPTH + BMD_neck, data = dplyr::filter(PHPT_ml, group=="B"), family = binomial)
+summary(model7)
+exp(coef(model7))
+exp(confint(model7))
+BIC(model0, model1, model2, model3, model4, model5, model6, model7)
+```
+
+## Model 8
+
+```{r}
+model8 <- glm(fracture_any ~ age + sex + TBS + nicotine_dependence + BMI + Ca + iPTH + Tscore_femur_neck + Tscore_radial + Tscore_lumbar, data = dplyr::filter(PHPT_ml, group=="B"), family = binomial)
+summary(model8)
+exp(coef(model8))
+exp(confint(model8))
+BIC(model0, model1, model2, model3, model4, model5, model6, model7, model8)
+```
+
+## Model 9
+
+```{r}
+model9 <- glm(fracture_any ~ age + sex + TBS + Tscore_femur_neck + Tscore_radial + Tscore_lumbar, data = dplyr::filter(PHPT_ml, group=="B"), family = binomial)
+summary(model9)
+exp(coef(model9))
+exp(confint(model9))
+BIC(model0, model1, model2, model3, model4, model5, model6, model7, model8, model9)
+```
+
+## Model 10
+
+```{r}
+model10 <- glm(fracture_any ~ age + sex + TBS + BMD_neck, data = dplyr::filter(PHPT_ml, group=="B"), family = binomial)
+summary(model10)
+exp(coef(model10))
+exp(confint(model10))
+BIC(model0, model1, model2, model3, model4, model5, model6, model7, model8, model9, model10)
+```
+## Model 11
+
+```{r}
+model11 <- glm(fracture_any ~ age + sex + TBS + BMI + BMD_neck, data = dplyr::filter(PHPT_ml, group=="B"), family = binomial)
+summary(model11)
+exp(coef(model11))
+exp(confint(model11))
+BIC(model0, model1, model2, model3, model4, model5, model6, model7, model8, model9, model10, model11)
+```
+
+## Model 12
+
+```{r}
+model12 <- glm(fracture_any ~ age + sex + TBS + nicotine_dependence + BMD_neck, data = dplyr::filter(PHPT_ml, group=="B"), family = binomial)
+summary(model12)
+exp(coef(model12))
+exp(confint(model12))
+BIC(model0, model1, model2, model3, model4, model5, model6, model7, model8, model9, model10, model11, model12)
+```
+
+## Model 13
+```{r}
+model13 <- glm(fracture_any ~ age + sex + BMI + nicotine_dependence + TBS + Tscore_femur_neck + Tscore_radial + Tscore_lumbar, data = dplyr::filter(PHPT_ml, group=="B"), family = binomial)
+summary(model13)
+exp(coef(model13))
+exp(confint(model13))
+BIC(model13)
+BIC(model0, model1, model2, model3, model4, model5, model6, model7, model8, model9, model10, model11, model12, model13)
+```
+
+## Model 14
+```{r}
+model14 <- glm(fracture_any ~ age + sex + BMI + nicotine_dependence + TBS + BMD_neck, data = dplyr::filter(PHPT_ml, group=="B"), family = binomial)
+summary(model14)
+exp(coef(model14))
+exp(confint(model14))
+BIC(model14)
+BIC(model0, model1, model2, model3, model4, model5, model6, model7, model8, model9, model10, model11, model12, model13, model14)
+```
