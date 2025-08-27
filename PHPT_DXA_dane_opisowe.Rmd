@@ -20,6 +20,7 @@ library(scales)
 library(rstatix)
 library(ggplot2)
 library(ggpubr)
+library(DescTools)
 
 plik_dane_do_analizy <- "PHPT.RDS"
 
@@ -1106,31 +1107,62 @@ ggplot(PHPT, aes(BMD_neck, log_HF)) +
 ```
 # VFA w grupach badanej i kontrolnej?
 ```{r}
-PHPT %>%
-  filter(Tscore_lumbar <= -1 | Tscore_femur_neck <= -1 | Tscore_femur_total <= -1) %>%
-  group_by(group) %>%
-  count(VFA)
-
 
 PHPT %>%
   group_by(group) %>%
   count(VFA)
-
-mosaicplot(~ group + VFA, data = PHPT, color = TRUE)
-
-fisher.test(table(PHPT$group, PHPT$VFA))
-
-pairwise_fisher_test(table(PHPT$group, PHPT$VFA), p.adjust.method = "fdr")
-
 
 PHPT_clean <- PHPT %>%
-  filter(VFA %in% c("fracture","normal"))
+  filter(VFA %in% c("fracture","norm")) %>%
+  droplevels()
 
-PHPT_clean
-
-# podgląd: mozaika
 mosaicplot(~ group + VFA, data = PHPT_clean, color = TRUE)
 
-pairwise_fisher_test(table(PHPT_clean$group, PHPT_clean$VFA), p.adjust.method = "fdr")
+tab <- table(PHPT_clean$group, PHPT_clean$VFA)
+tab
+fisher.test(tab)
 
+
+OddsRatio(tab, method = "wald", conf.level = 0.95)
+
+```
+# ile jest złamań wszystkich?
+```{r}
+
+PHPT %>%
+  group_by(group) %>%
+  count(fracture_any)
+
+PHPT %>%
+  count(group, fracture_any) %>%
+  group_by(group) %>%
+  mutate(percent = 100 * n / sum(n))
+
+mosaicplot(~ group + fracture_any, data = PHPT, color = TRUE)
+
+fisher.test(table(PHPT$group, PHPT$fracture_any))
+
+pairwise_fisher_test(table(PHPT$group, PHPT$fracture_any), p.adjust.method = "fdr")
+```
+# ile jest złamań NVF?
+```{r}
+PHPT %>%
+  group_by(group) %>%
+  count(fracture)
+
+PHPT %>%
+  count(group, fracture) %>%
+  group_by(group) %>%
+  mutate(percent = 100 * n / sum(n))
+```
+# ile jest złamań VF (na podstawie VFA)?
+```{r}
+PHPT %>%
+  group_by(group) %>%
+  count(VFA)
+
+PHPT %>%
+  count(group, VFA) %>%
+  group_by(group) %>%
+  mutate(percent = 100 * n / sum(n))
 ```

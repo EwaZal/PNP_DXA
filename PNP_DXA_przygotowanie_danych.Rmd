@@ -74,6 +74,12 @@ PHPT <- PHPT %>%
                                 TBS < 1.2 ~ "low"))
 
 PHPT <- PHPT %>%
+  mutate(fracture_any = case_when (
+    VFA == "fracture" | fracture == "Y" ~ "Y",
+    VFA != "fracture" & fracture != "Y" ~ "N"))
+
+
+PHPT <- PHPT %>%
   mutate(T_score_split = case_when (Tscore_lumbar <= -1 | Tscore_femur_neck <= -1 ~ "low",
                                 Tscore_lumbar > -1 | Tscore_femur_neck > -1 ~ "high"))
 
