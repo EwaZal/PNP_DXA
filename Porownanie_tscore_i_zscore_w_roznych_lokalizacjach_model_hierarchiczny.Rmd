@@ -14,6 +14,9 @@ knitr::opts_chunk$set(warning = FALSE, message = FALSE)
 ```{r setup, include=FALSE}
 
 install.packages("Matrix")
+install.packages("lme4")
+install.packages("lmerTest")   # dopiero na końcu
+
 library(Matrix)
 library(dplyr)
 library(purrr)
@@ -87,10 +90,12 @@ score_lme <- bind_cols(
 
 ``` {r}
 
+R.version.string
+
 score_lme$group <- factor(score_lme$group, levels = c("K","B"))  # K=kontrola, B=badani (PHPT)
 score_lme$site  <- factor(score_lme$site,  levels = c("LUMBAR","FEMUR","RADIAL"))
 score_lme$sex   <- factor(score_lme$sex)
 
 # MODEL 1: random intercept dla pacjenta
-m1 <- lmer(Tscore ~ site*group + age + sex + BMI + (1 | id), data = score_lme)
+m1 <- lmer(Tscore ~ site*group + age + sex + BMI + (1|id), data = score_lme, REML = TRUE)
 ```
