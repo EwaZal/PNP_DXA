@@ -55,6 +55,16 @@ sapply(PHPT$HF_risk, is.numeric)
 sapply(PHPT$Tscore_femur_neck, is.numeric)
 sapply(PHPT$Tscore_femur_total, is.numeric)
 
+PHPT <- PHPT %>%
+  group_by(group) %>%
+  mutate(
+    id = case_when(
+      group == "B" ~ paste0("P", sprintf("%03d", row_number())),
+      group == "K" ~ paste0("K", sprintf("%03d", row_number()))
+    )
+  ) %>%
+  ungroup()
+
 
 PHPT <- PHPT %>%
   mutate(log_iPTH = log(iPTH),
