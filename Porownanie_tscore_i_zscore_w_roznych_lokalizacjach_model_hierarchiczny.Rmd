@@ -90,12 +90,25 @@ score_lme <- bind_cols(
 
 ``` {r}
 
-R.version.string
-
 score_lme$group <- factor(score_lme$group, levels = c("K","B"))  # K=kontrola, B=badani (PHPT)
 score_lme$site  <- factor(score_lme$site,  levels = c("LUMBAR","FEMUR","RADIAL"))
 score_lme$sex   <- factor(score_lme$sex)
 
 # MODEL 1: random intercept dla pacjenta
 m1 <- lmer(Tscore ~ site*group + age + sex + BMI + (1|id), data = score_lme, REML = TRUE)
+```
+
+``` {r}
+
+# Test efektów stałych (w tym interakcji site × group)
+anova(m1)
+
+# Estymowane średnie marginalne
+emm <- emmeans(m1, ~ site*group)
+
+# Różnice PHPT vs kontrola w każdej lokalizacji
+pairs(emmeans(m1, ~ group | site), adjust = "holm")
+
+# Różnice między lokalizacjami w każdej grupie
+pairs(emmeans(m1, ~ site | group), adjust = "holm")
 ```

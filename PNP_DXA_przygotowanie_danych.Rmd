@@ -12,6 +12,16 @@ knitr::opts_chunk$set(warning = FALSE, message = FALSE)
 ```
 
 ```{r setup, include=FALSE}
+
+install.packages("installr")
+library(installr)
+updateR()
+
+R.version.string
+```
+
+```{r setup, include=FALSE}
+
 library(tidyverse)
 library(readxl)
 library(writexl)
