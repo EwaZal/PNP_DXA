@@ -49,8 +49,6 @@ theme_set(theme_classic2(base_size = 13))
 
 
 PHPT_lme <- PHPT
-
-names(PHPT_lme)
 ```
 
 # algorytm MICE 
@@ -115,7 +113,7 @@ pairs(emmeans(m1, ~ site | group), adjust = "holm")
 ```
 
 ```{r}
-# (1) Porządek poziomów (zgodny z Twoim plikiem: K/B i LUMBAR/FEMUR/RADIAL)
+# (1) Porządek poziomów (K/B i LUMBAR/FEMUR/RADIAL)
 score_lme <- score_lme %>%
   mutate(
     group = factor(group, levels = c("K","B"), labels = c("control","PHPT")),
@@ -155,5 +153,60 @@ lme_plot <- ggplot(emm_df, aes(x = site, y = emmean, color = group, group = grou
   theme_minimal(base_size = 12)
 
 ggsave("Lme_plot.jpg", plot = lme_plot, width = 9, height = 4, dpi = 300)
+
+```
+
+``` {r}
+
+# MODEL 1: random intercept dla pacjenta
+m2 <- lmer(zscore ~ site*group + age + sex + BMI + (1|id), data = score_lme, REML = TRUE)
+
+summary(m2)        # estymaty i p-values (Satterthwaite)
+anova(m2)          # testy F dla efektów stałych
+check_model(m2)    # szybka diagnostyka reszt i dopasowania
+
+# Estymowane średnie marginalne
+emm2 <- emmeans(m2, ~ site*group)
+
+# Różnice PHPT vs kontrola w każdej lokalizacji
+pairs(emmeans(m2, ~ group | site), adjust = "holm")
+
+# Różnice między lokalizacjami w każdej grupie
+pairs(emmeans(m2, ~ site | group), adjust = "holm")
+```
+
+```{r}
+
+# Kontrasty sum-to-zero do testów typu III
+options(contrasts = c("contr.sum","contr.poly"))
+
+# Model mieszany (random intercept dla pacjenta)
+m2 <- lmer(zscore ~ site*group + age + sex + BMI + (1|id), data = score_lme, REML = TRUE)
+
+# (4) Estymowane średnie marginalne (EMMs)
+emm2 <- emmeans(m2, ~ site*group)
+emm_df2 <- as.data.frame(emm2)  # do wykresu: kolumny emmean, lower.CL, upper.CL
+
+# (5) Kontrasty: PHPT vs kontrola w każdej lokalizacji (tabela do konsoli)
+cat("\nPHPT vs control w poszczególnych lokalizacjach:\n")
+contr_tbl <- pairs(emmeans(m2, ~ group | site), adjust = "holm")
+print(contr_tbl)
+
+# (6) Wykres EMM ±95% CI (punkty + errorbary + linie)
+pd <- position_dodge(width = 0.35)
+
+lme_plot2 <- ggplot(emm_df2, aes(x = site, y = emmean, color = group, group = group)) +
+  geom_point(size = 3, position = pd) +
+  geom_errorbar(aes(ymin = lower.CL, ymax = upper.CL), width = 0.14, position = pd) +
+  geom_line(alpha = 0.7, position = pd) +
+  labs(
+    x = "Skeletal site",
+    y = "Z-score (estimated marginal means ±95% CI)",
+    color = "Group",
+    title = "Z-score by skeletal site and group (mixed-effects model with a random intercept for patient)."
+  ) +
+  theme_minimal(base_size = 12)
+
+ggsave("Lme_plot2.jpg", plot = lme_plot2, width = 9, height = 4, dpi = 300)
 
 ```
